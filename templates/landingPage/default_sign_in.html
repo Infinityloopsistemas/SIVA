@@ -1,0 +1,190 @@
+{% load compress %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SIVA</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="GivaSL">
+
+        <meta http-equiv="x-pjax-version" content="v173">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+<!-- fav and touch icons -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144"
+	href="ico/favico-144-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114"
+	href="ico/favico-114-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72"
+	href="ico/favico-72-precomposed.png">
+<link rel="apple-touch-icon-precomposed"
+	href="ico/favico-57-precomposed.png">
+<link rel="shortcut icon" href="ico/favico.png">
+<link rel="shortcut icon" href="ico/favico.ico">
+
+<!-- build:css styles/vendor.css -->
+<!-- bower:css -->
+{% compress css %}
+<link rel="stylesheet"
+	href="{{ STATIC_URL }}stil/app/bower_components/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet"
+	href="{{ STATIC_URL }}stil/app/bower_components/font-awesome/css/font-awesome.css">
+<link rel="stylesheet"
+	href="{{ STATIC_URL }}stil/app/bower_components/animate.css/animate.css">
+<link rel="stylesheet"
+	href="{{ STATIC_URL }}stil/app/bower_components/Hover/css/hover.css">
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:css(.tmp) styles/main.css -->
+<link id="style-components"
+	href="{{ STATIC_URL }}stil/app/styles/loaders.css" rel="stylesheet">
+<link id="style-components"
+	href="{{ STATIC_URL }}stil/app/styles/bootstrap-theme.css"
+	rel="stylesheet">
+<link id="style-base"
+	href="{{ STATIC_URL }}stil/app/styles/stilearn.css" rel="stylesheet">
+<link id="style-responsive"
+	href="{{ STATIC_URL }}stil/app/styles/stilearn-responsive.css"
+	rel="stylesheet">
+<link id="style-helper"
+	href="{{ STATIC_URL }}stil/app/styles/helper.css" rel="stylesheet">
+<link id="style-sample"
+	href="{{ STATIC_URL }}stil/app/styles/pages-style.css" rel="stylesheet">
+{% endcompress %}
+<!-- endbuild -->
+        
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+          <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body class="animated fadeIn">		
+
+		<div class="content content-full">
+			<div class="container">
+				<div class="signin-wrapper">
+					<div class="tab-content">
+						<div class="row tab-pane fade in active" id="signin">
+							<div class="col-md-offset-1 col-md-6 hidden-sm hidden-xs">
+								<div id="carousel-example" class="carousel slide" data-ride="carousel">
+							      	<ol class="carousel-indicators">
+								        <li data-target="#carousel-example" data-slide-to="0" class="active"></li>
+								        <li data-target="#carousel-example" data-slide-to="1"></li>
+								        <!-- <li data-target="#carousel-example" data-slide-to="2"></li>
+								        <li data-target="#carousel-example" data-slide-to="3"></li>
+								        <li data-target="#carousel-example" data-slide-to="4"></li>  -->
+							      	</ol>
+							      	<div class="carousel-inner">
+								        <div class="item active">
+								          	<img src="{{ STATIC_URL }}images/landing-page/green.jpg" alt="Stilearn Admin">
+								        </div>
+								        <div class="item">
+								          	<img src="{{ STATIC_URL }}images/landing-page/waterclean.jpg" alt="Stilearn Admin">
+								        </div>
+
+							      	</div>
+							      	<a class="left carousel-control" href="#carousel-example" data-slide="prev">
+							        	<span class="glyphicon glyphicon-chevron-left"></span>
+							      	</a>
+							      	<a class="right carousel-control" href="#carousel-example" data-slide="next">
+							        	<span class="glyphicon glyphicon-chevron-right"></span>
+							      	</a>
+							    </div>
+							</div><!--/cols-->
+
+							<div class="col-md-offset-1 col-md-4 col-sm-offset-2 col-sm-8">							
+								<div class="signin">
+									<div class="signin-brand">
+										<a href="/">
+											<img src="{{ STATIC_URL }}images/landing-page/logo-giva.png"alt="Siva">
+										</a>
+									</div><!--/signin-brand-->
+
+									<form method="POST" data-validate="form" role="form" id="signin-form">
+										<p><small>Acceso a SIVA</small></p>
+										<div class="form-group">
+											<div class="input-group input-group-in">
+												<span class="input-group-addon text-muted">@</span>												
+												{{ form.username }}
+											</div><!--/input-group-->
+										</div><!--/form-group-->
+
+										<div class="form-group">
+											<div class="input-group input-group-in">
+												<span class="input-group-addon text-muted"><i class="fa fa-circle-o"></i></span>
+												{{ form.password }}
+											</div><!--/input-group-->
+										</div><!--/form-group-->										
+										 
+
+										
+
+										<div class="form-group form-actions">
+											<input type="submit" class="hidden-sm btn btn-primary" value="Entrar">
+											<input type="submit" class="visible-sm btn btn-lg btn-block btn-primary" value="Entrar">
+										</div><!--/form-group-->
+										
+										{% if next %}
+                                        <input  type="hidden" name="next" value="/sign_in" />
+                                    	{% else %}
+                                        <input  type="hidden" name="next" value="/panelprincipal" />
+                                    	{% endif %}
+
+										<p>
+											<small>												
+												<a href="#" class="hidden-sm">¿Ha olvidado la contraseña?</a>
+											</small>
+										</p>
+									</form><!--/#signin-form-->
+								</div><!--/signin-->
+
+								
+							</div><!--/cols-->
+						</div><!--/row-->
+
+
+					</div><!--/tab-content-->
+
+					<div class="signin-footer">
+						<ul class="list-inline">
+							<li>Copyright &copy; 2015 Grupo Integral de Vigilancia Alimentaria S.L.</li>
+						</ul>
+					</div>
+
+				</div><!--/signin-wapper-->
+
+			</div><!--/container-->
+		</div><!--/content-->
+
+
+	<!-- build:js scripts/vendor-main.js -->
+	<!-- bower:js -->
+{% compress js %}
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jquery/jquery.min.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jqueryui/ui/jquery-ui.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jqueryui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<!-- endbuild -->
+
+
+	<!-- build:js scripts/excanvas.js -->
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="bower_components/flot/excanvas.min.js"></script><![endif]-->
+	<!-- endbuild -->
+
+
+	<!-- build:js scripts/vendor-util.js -->
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/holderjs/holder.js"></script>
+	<!-- endbower -->
+	<!-- endbuild -->
+{% endcompress %}
+
+    </body>
+</html>

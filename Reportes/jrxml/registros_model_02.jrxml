@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="registros_model_02" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ccd849b8-8a8e-4bec-bd93-6426ba9a5c1b">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.jasperserver.reportUnit" value="/siva/appcc/registros/registros_model_02"/>
+	<property name="ireport.jasperserver.url" value="http://176.58.121.31:8080/jasperserver/services/repository"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="pid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pfinicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pffin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pdetregid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="phorarioid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     appcc_appcc.`denominacion` AS appcc_appcc_denominacion,
+     appcc_appcc.`fechaedicion` AS appcc_appcc_fechaedicion,
+     appcc_manualautocontrol.`appcc_id` AS appcc_manualautocontrol_appcc_id,
+     MAESTROS_GENERALES('TIPOSPLANCONTROL',appcc_manualautocontrol.`tpplancontrol_id`) AS txttpplancontrol,
+     appcc_cabregistros.`id` AS appcc_cabregistros_id,
+     siva.MAESTROS('TIPOSMEDIDASVIGILANCIA',appcc_cabregistros.`tpmedvig_id`) AS txttpmedvig,
+     siva.MAESTROS('TIPOSLIMITESCRITICOS',appcc_detallesregistros.`tplimitcrit_id`)  AS txttplimitcrit,
+     siva.MAESTROS('TIPOSFRECUENCIAS',appcc_cabregistros.`frecuencia_id`) AS txtfrecuencia,
+     siva.MAESTROS('TIPOSMEDIDASACTUACION',appcc_cabregistros.`tpmedactc_id`) AS txttpmedactc,
+     appcc_cabregistros.`denominacion` AS appcc_cabregistros_denominacion,
+     appcc_registros.`fechadesde` AS appcc_registros_fechadesde,
+     appcc_registros.`fechahasta` AS appcc_registros_fechahasta,
+     appcc_registros.`valor` AS appcc_registros_valor,
+     appcc_registros.`estado` AS appcc_registros_estado,
+     appcc_registros.`observaciones` AS appcc_registros_observaciones,
+     siva.MAESTROS('ACTIVIDADES',appcc_detallesregistros.`actividades_id`) AS txtactividades,
+     siva.MAESTROS('ZONAS',appcc_detallesregistros.`zonas_id`) AS txtzonas,
+     siva.MAESTROS('CATALOGOEQUIPOS',appcc_detallesregistros.`equipos_id`) AS txtequipos,
+     siva.MAESTROS('UNIDADESANALITICAS',appcc_detallesregistros.`valanali_id`) AS txtunidades,
+     siva.MAESTROS('PERSONAL',plan.personal_id) AS txtperfirma ,
+     appcc_detallesregistros.`id` AS appcc_detallesregistros_id,
+     appcc_manualautocontrol.`id` AS appcc_manualautocontrol_id,
+     appcc_appcc.`id` AS appcc_appcc_id,
+     appcc_registros.`id` AS appcc_registros_id,
+     siva.MAESTROS('HORARIOTURNOS',appcc_registros.`horarioturno_id`) txthorarioturno
+FROM
+     siva.`appcc_appcc` appcc_appcc INNER JOIN siva.`appcc_manualautocontrol` appcc_manualautocontrol ON appcc_appcc.`id` = appcc_manualautocontrol.`appcc_id` INNER JOIN siva.appcc_planautocontrol plan ON  appcc_manualautocontrol.id = plan.manautctrl_id
+     INNER JOIN siva.`appcc_cabregistros` appcc_cabregistros ON plan.`manautctrl_id` = appcc_cabregistros.`manautctrl_id`
+     INNER JOIN siva.`appcc_detallesregistros` appcc_detallesregistros ON appcc_cabregistros.`id` = appcc_detallesregistros.`cabreg_id`
+     INNER JOIN siva.`appcc_registros` appcc_registros ON appcc_detallesregistros.id = appcc_registros.detreg_id
+      where  appcc_detallesregistros.`cabreg_id`= IF($P{pid}=0,appcc_detallesregistros.`cabreg_id`,$P{pid})
+and appcc_detallesregistros.`id`= IF($P{pdetregid}=0,appcc_detallesregistros.`id`,$P{pdetregid})
+and appcc_registros.`fechadesde`>=STR_TO_DATE($P{pfinicio},"%Y%m%d") and appcc_registros.`fechadesde`<=STR_TO_DATE($P{pffin},"%Y%m%d")
+and appcc_registros.horarioturno_id=IF($P{phorarioid}=0,appcc_registros.horarioturno_id,$P{phorarioid})
+group by
+appcc_appcc.`denominacion` ,
+     appcc_appcc.`fechaedicion`,
+     appcc_manualautocontrol.`appcc_id`,
+     MAESTROS_GENERALES('TIPOSPLANCONTROL',appcc_manualautocontrol.`tpplancontrol_id`),
+     appcc_cabregistros.`id` ,
+     siva.MAESTROS('TIPOSMEDIDASVIGILANCIA',appcc_cabregistros.`tpmedvig_id`),
+     siva.MAESTROS('TIPOSLIMITESCRITICOS',appcc_detallesregistros.`tplimitcrit_id`)  ,
+     siva.MAESTROS('TIPOSFRECUENCIAS',appcc_cabregistros.`frecuencia_id`) ,
+     siva.MAESTROS('TIPOSMEDIDASACTUACION',appcc_cabregistros.`tpmedactc_id`),
+     appcc_cabregistros.`denominacion`,
+     appcc_registros.`fechadesde`,
+     appcc_registros.`fechahasta`,
+     appcc_registros.`valor` ,
+     appcc_registros.`estado`,
+     appcc_registros.`observaciones` ,
+     siva.MAESTROS('ACTIVIDADES',appcc_detallesregistros.`actividades_id`) ,
+     siva.MAESTROS('ZONAS',appcc_detallesregistros.`zonas_id`),
+     siva.MAESTROS('CATALOGOEQUIPOS',appcc_detallesregistros.`equipos_id`),
+     siva.MAESTROS('UNIDADESANALITICAS',appcc_detallesregistros.`valanali_id`),
+     siva.MAESTROS('PERSONAL',plan.personal_id) ,
+     appcc_detallesregistros.`id` ,
+     appcc_manualautocontrol.`id` ,
+     appcc_appcc.`id`,
+     appcc_registros.`id`,
+     appcc_registros.`horarioturno_id`
+order by appcc_detallesregistros.`id`,appcc_registros.`fechadesde`]]>
+	</queryString>
+	<field name="appcc_appcc_denominacion" class="java.lang.String"/>
+	<field name="appcc_appcc_fechaedicion" class="java.sql.Date"/>
+	<field name="appcc_manualautocontrol_appcc_id" class="java.lang.Integer"/>
+	<field name="txttpplancontrol" class="java.lang.String"/>
+	<field name="appcc_cabregistros_id" class="java.lang.Integer"/>
+	<field name="txttpmedvig" class="java.lang.String"/>
+	<field name="txttplimitcrit" class="java.lang.String"/>
+	<field name="txtfrecuencia" class="java.lang.String"/>
+	<field name="txttpmedactc" class="java.lang.String"/>
+	<field name="appcc_cabregistros_denominacion" class="java.lang.String"/>
+	<field name="appcc_registros_fechadesde" class="java.sql.Date"/>
+	<field name="appcc_registros_fechahasta" class="java.sql.Date"/>
+	<field name="appcc_registros_valor" class="java.math.BigDecimal"/>
+	<field name="appcc_registros_estado" class="java.lang.Boolean"/>
+	<field name="appcc_registros_observaciones" class="java.lang.String"/>
+	<field name="txtactividades" class="java.lang.String"/>
+	<field name="txtzonas" class="java.lang.String"/>
+	<field name="txtequipos" class="java.lang.String"/>
+	<field name="txtunidades" class="java.lang.String"/>
+	<field name="txtperfirma" class="java.lang.String"/>
+	<field name="appcc_detallesregistros_id" class="java.lang.Integer"/>
+	<field name="appcc_manualautocontrol_id" class="java.lang.Integer"/>
+	<field name="appcc_appcc_id" class="java.lang.Integer"/>
+	<field name="appcc_registros_id" class="java.lang.Integer"/>
+	<field name="txthorarioturno" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="132" splitType="Stretch">
+			<line>
+				<reportElement uuid="2264f257-1956-4dfe-943c-254e62e7bda0" x="670" y="25" width="132" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="03714bfd-c8e8-4eba-9e2d-941dc58fd045" x="670" y="44" width="132" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="a15866aa-207a-44b9-af6e-f366831bac56" x="670" y="5" width="54" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="550feb6e-61f1-4940-9ea5-715f1232a23b" x="725" y="45" width="77" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{appcc_appcc_fechaedicion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="92dd4752-8af2-4ed4-b47e-045a3e7191b6" x="724" y="5" width="78" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["PLDI"]]></textFieldExpression>
+			</textField>
+			<rectangle radius="10">
+				<reportElement uuid="7e8cb898-35b7-4bc4-ab0b-584c14c47ac7" mode="Transparent" x="670" y="6" width="132" height="78"/>
+			</rectangle>
+			<line>
+				<reportElement uuid="9c63f0b6-3918-46a4-8a45-ae6619369153" x="724" y="5" width="1" height="79"/>
+			</line>
+			<staticText>
+				<reportElement uuid="222b66ee-6f24-4d89-91de-c90f99d16466" x="670" y="45" width="54" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="34bd5456-ae23-4c3f-8e55-fd8e8ea28ec2" x="670" y="25" width="54" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Versión]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ed059c40-b696-4f61-9f3e-c4c7482eb2b6" x="670" y="65" width="54" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Tipo]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="23731ce0-f561-4473-a4a6-825ba155991f" x="724" y="65" width="78" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Manual"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="37263733-88d6-483f-b133-10a63ffb91e5" x="724" y="25" width="78" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["5"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="87f9e61c-b5b4-4d38-8c16-8dffddd1b037" x="670" y="62" width="132" height="1"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="a66afbf1-2458-4535-a4ac-16949cfaba48" mode="Transparent" x="0" y="45" width="670" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_cabregistros_denominacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c12d731d-4c49-430b-9b2f-a269011c399e" x="0" y="0" width="670" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_appcc_denominacion}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement uuid="84f10003-9ba7-4709-a766-f84f68ce4120" x="2" y="85" width="336" height="32"/>
+				<staticText>
+					<reportElement uuid="ee0ccc06-0092-4756-b57e-342e3a263b02" x="0" y="0" width="94" height="16"/>
+					<textElement>
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Medidas de Vigilancia]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="5116d0f5-192b-499f-b0a0-331006d4775d" x="94" y="0" width="242" height="32"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{txttpmedvig}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement uuid="d769a3e4-fe96-4c48-99ee-2ad20476d992" mode="Transparent" x="0" y="0" width="336" height="32"/>
+				</rectangle>
+			</frame>
+			<frame>
+				<reportElement uuid="e4f4904f-4a18-455f-969b-e776f0d2e3c0" x="338" y="85" width="464" height="32"/>
+				<rectangle>
+					<reportElement uuid="4e321a2c-8b28-4241-abaf-2a348ad27a3e" mode="Transparent" x="0" y="0" width="464" height="32"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="cddc1422-6a58-4fb2-a286-bb1c2d08f69c" x="10" y="0" width="123" height="16"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Medidas Actuación Correctoras]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="01939792-a930-4e6d-ae1c-1a70a358a697" x="133" y="4" width="331" height="12"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{txttpmedactc}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="747173cc-a6b8-4ce3-a676-574cbde1f989" x="133" y="16" width="331" height="16"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{txtfrecuencia}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="d24702cd-a31e-4b5d-9598-2c93ec78a8f5" x="10" y="16" width="123" height="16"/>
+					<textElement>
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Frecuencias]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="44" splitType="Stretch">
+			<frame>
+				<reportElement uuid="8922de6d-8fa6-4a31-b2dd-46632cf050c4" x="2" y="24" width="800" height="20"/>
+				<textField>
+					<reportElement uuid="68cd49bf-3766-4692-b513-b68f0478d6f6" x="668" y="0" width="76" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement uuid="357cf8a1-feab-41d0-9eb8-5adeb1794d59" x="748" y="0" width="45" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement uuid="89a67ede-e98b-41fe-ac1f-7f4f9e6af404" x="0" y="0" width="219" height="20"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="05dcda76-0e7e-4826-b66e-df3f6a5719f2" x="0" y="0" width="219" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{JASPER_REPORT}.getName()]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement uuid="d1ef307d-6cbf-4a6d-95e4-de0d8a8d622e" x="219" y="0" width="100" height="20"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="17a74ccb-3427-495b-8196-cb55d5576a97" x="319" y="0" width="167" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SIVA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="22b1c904-4ee5-4265-8619-04a34b1d4028" x="219" y="0" width="100" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Version: 1.0]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement uuid="dacbeca0-3739-4996-9fc9-7f1d072aa727" mode="Transparent" x="319" y="0" width="167" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="2a21c457-b724-49b2-9137-f90d0348246d" mode="Transparent" x="646" y="0" width="154" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="badf323f-6286-4bd3-9929-68c784104624" x="486" y="0" width="160" height="20"/>
+				</rectangle>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="a8448b10-a78b-4b87-b8bb-fe9813e43543" x="486" y="0" width="160" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="26ade841-4754-4356-962a-8f6395c6580d" x="2" y="0" width="800" height="20"/>
+				<rectangle>
+					<reportElement uuid="f4d0cd8e-0b07-428f-96af-51a6b1ad4512" x="0" y="0" width="82" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="cb6df5e2-5d69-465b-89b9-8fe42b484ec8" x="82" y="0" width="154" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="7062578b-296a-4d39-b0e5-c2cc448435cf" mode="Transparent" x="469" y="0" width="184" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="563d95f4-bcf1-4937-9863-ec34028e3d10" x="397" y="0" width="72" height="20"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="1b61198a-d6a3-4851-8fd4-32757b83a0a7" x="0" y="0" width="82" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Cumplimentado por:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="3769d3c6-6889-4721-8b18-dfe26291ca4b" x="397" y="0" width="72" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Revisado por:]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement uuid="63d714ca-756d-43ac-8bb7-d8cb35c41c27" mode="Transparent" x="744" y="0" width="56" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="5cdd215b-74ff-4a29-8815-006d62233419" mode="Transparent" x="653" y="0" width="91" height="20"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="53955054-55ff-4c78-ab71-03c39334c2f7" x="653" y="0" width="91" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Fecha Revisión]]></text>
+				</staticText>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="7a22d718-0b3a-47f6-9138-081bc686a77f" mode="Transparent" x="751" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="740ad65c-ed28-4423-8eae-93212358e1eb" x="236" y="0" width="83" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Fecha Cumplimenta]]></text>
+				</staticText>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="11da4369-e764-499c-a6f6-d9905add7ec1" mode="Transparent" x="324" y="0" width="73" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement uuid="84cd9529-b919-40c0-88bb-89497ed58b6f" mode="Transparent" x="324" y="0" width="73" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="28afa4dd-7e9d-4385-ac8e-6afb02ccf5a1" mode="Transparent" x="236" y="0" width="88" height="20"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="76a33909-1f31-4f58-a873-9d4a07812a2f" x="469" y="0" width="184" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{txtperfirma}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="233" splitType="Stretch">
+			<crosstab>
+				<reportElement uuid="79e101ab-c7b3-49cf-8ef7-b37be9ee63eb" x="0" y="0" width="802" height="233"/>
+				<rowGroup name="appcc_registros_fechadesde" width="70">
+					<bucket class="java.sql.Date">
+						<bucketExpression><![CDATA[$F{appcc_registros_fechadesde}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="dd/MM/yyyy">
+								<reportElement uuid="6b19c69a-6dce-49ae-9c2d-d4ad18dd3fa4" style="Crosstab Data Text" x="0" y="0" width="70" height="25"/>
+								<textElement>
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{appcc_registros_fechadesde}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="txturno" height="30" headerPosition="Center">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{txthorarioturno}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents>
+							<textField>
+								<reportElement uuid="79946aed-1b2e-40a0-b902-15048e3d47aa" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="97" height="30"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{txturno}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="txtactividades" height="87" headerPosition="Center">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{txtactividades}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="cd9bb5ed-5ed3-4670-995a-e58c879c3712" style="Crosstab Data Text" stretchType="RelativeToTallestObject" x="0" y="0" width="97" height="87"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+									<paragraph tabStopWidth="80"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{txtactividades}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="txtequipos" height="99">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{txtequipos}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="5d43e2cb-7fbf-4f3d-9b23-f0220fd675fb" style="Crosstab Data Text" x="0" y="0" width="97" height="99"/>
+								<textElement verticalAlignment="Middle" rotation="Left"/>
+								<textFieldExpression><![CDATA[$V{txtequipos}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="appcc_registros_estadoMeasure" class="java.lang.Boolean" calculation="First">
+					<measureExpression><![CDATA[$F{appcc_registros_estado}]]></measureExpression>
+				</measure>
+				<crosstabCell width="97" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="c52fe959-c8e4-49e7-a697-178ce92fdf2b" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[($V{appcc_registros_estadoMeasure}==false?"N":"S")]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="appcc_registros_fechadesde">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="4fd3d88d-7162-4bd6-98d0-9d4adfb92711" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{appcc_registros_estadoMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="txtactividades">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="1ded4fc6-16cb-453f-a3ff-d152126ea2e3" style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{appcc_registros_estadoMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="appcc_registros_fechadesde" columnTotalGroup="txtactividades">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="55aedbb9-0d77-43b0-9c93-c8a1d989cefc" style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{appcc_registros_estadoMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="txtequipos">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="61f0a872-7725-4c07-88b9-ded21b84e093" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{appcc_registros_estadoMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="appcc_registros_fechadesde" columnTotalGroup="txtequipos">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="d5714372-8c97-4ed2-a097-1d0ce01de203" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{appcc_registros_estadoMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell columnTotalGroup="txturno">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="appcc_registros_fechadesde" columnTotalGroup="txturno">
+					<cellContents/>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

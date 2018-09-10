@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relacionpersonal" language="groovy" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="20" bottomMargin="20" uuid="bfd0da00-af95-4c72-a089-9fe25f9848b1">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="522"/>
+	<property name="ireport.jasperserver.reportUnit" value="/siva/appcc/planes/plancontrol_mode_01"/>
+	<property name="ireport.jasperserver.url" value="http://176.58.121.31:8080/jasperserver/services/repository"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="PieChartDataset" uuid="5c03800d-15bf-431e-bdd9-650b570ba117"/>
+	<parameter name="pmanautctrlid" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[9]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+       appcc_appcc.denominacion appccdenomina,
+       maestros_generales_tipoplancontrol.denominacion plandenomina,
+       maestros_tiposfrecuencias.nounidades,
+       maestros_personal.apellidos,
+       maestros_personal.nombres,
+       maestros_personal.cargo,
+       maestros_generales_tiposcatprofesional.denominacion ctaprofdenomina,
+       maestros_personal.dni,
+       appcc_relacionesentes.fechaalta,
+       appcc_relacionesentes.fechabaja,
+       appcc_relacionesentes.manautctrl_id,
+       ADDDATE(appcc_relacionesentes.fechaalta,round(maestros_tiposfrecuencias.nounidades/24)) as fecharenovacion,
+       maestros_terceros.denominacion denominaempresa,
+       maestros_generales_tipoplancontrol.id,
+       maestros_tiposcursos.denominacion cursodenomina,
+       maestros_tiposcursos.contenido contenidocurso,
+       maestros_tiposlegislacion.contenido contenidolegislacion,
+       maestros_terceros.cif cifempresa,
+       maestros_terceros.direccion1 dir1empresa,
+       maestros_terceros.direccion2 dir2empresa,
+       maestros_terceros.telefono telefonoempresa,
+       maestros_terceros.email emailempresa,
+       siva.maestros_generales('CODIGOSPOSTALES',maestros_terceros.codpostal_id)  as codpostalesempresas,
+       siva.maestros_generales('PROVINCIAS', maestros_terceros.provincia_id) as provinciasempresas,
+       siva.maestros_generales('MUNICIPIOS',maestros_terceros.municipio_id) as municipiosempresas,
+       maestros_terceros_1.cif ciformador ,
+       maestros_terceros_1.denominacion denominaformador,
+       maestros_terceros_1.direccion1 dir1formador,
+       maestros_terceros_1.direccion2 dir2formador,
+       siva.maestros_generales('CODIGOSPOSTALES',maestros_terceros_1.codpostal_id)  as codpostalesformador,
+       siva.maestros_generales('PROVINCIAS', maestros_terceros_1.provincia_id) as provinciasformador,
+       siva.maestros_generales('MUNICIPIOS',maestros_terceros_1.municipio_id) as municipiosformador
+  FROM    (   (   (   (   (   (   (   (   (   (   siva.appcc_relacionesentes appcc_relacionesentes
+                                               INNER JOIN
+                                                  siva.maestros_tiposfrecuencias maestros_tiposfrecuencias
+                                               ON (appcc_relacionesentes.frecuencia_id =
+                                                      maestros_tiposfrecuencias.id))
+                                           INNER JOIN
+                                              siva.appcc_manualautocontrol appcc_manualautocontrol
+                                           ON (appcc_relacionesentes.manautctrl_id =
+                                                  appcc_manualautocontrol.id))
+                                       INNER JOIN
+                                          siva.appcc_appcc appcc_appcc
+                                       ON (appcc_manualautocontrol.appcc_id =
+                                              appcc_appcc.id))
+                                   INNER JOIN
+                                      siva.maestros_generales_tipoplancontrol maestros_generales_tipoplancontrol
+                                   ON (appcc_manualautocontrol.tpplancontrol_id =
+                                          maestros_generales_tipoplancontrol.id))
+                               INNER JOIN
+                                  siva.maestros_personal maestros_personal
+                               ON (appcc_relacionesentes.personal_id =
+                                      maestros_personal.id))
+                           INNER JOIN
+                              siva.maestros_generales_tiposcatprofesional maestros_generales_tiposcatprofesional
+                           ON (maestros_personal.catprofesional_id =
+                                  maestros_generales_tiposcatprofesional.id))
+                       INNER JOIN
+                          siva.appcc_configuracion appcc_configuracion
+                       ON (appcc_configuracion.empresa_id =
+                              appcc_relacionesentes.empresa_id))
+                   INNER JOIN
+                      siva.maestros_terceros maestros_terceros
+                   ON (appcc_configuracion.operador_id = maestros_terceros.id))
+               INNER JOIN
+                  siva.maestros_tiposcursos maestros_tiposcursos
+               ON (appcc_relacionesentes.tiposcursos_id =
+                      maestros_tiposcursos.id))
+           INNER JOIN
+              siva.maestros_tiposlegislacion maestros_tiposlegislacion
+           ON (maestros_tiposcursos.legislacion_id =
+                  maestros_tiposlegislacion.id))
+       INNER JOIN
+          siva.maestros_terceros maestros_terceros_1
+       ON (maestros_terceros_1.id = appcc_relacionesentes.tercero_id)
+ where appcc_relacionesentes.fechabaja is null and appcc_relacionesentes.manautctrl_id=$P{pmanautctrlid}]]>
+	</queryString>
+	<field name="appccdenomina" class="java.lang.String"/>
+	<field name="plandenomina" class="java.lang.String"/>
+	<field name="nounidades" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="apellidos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cargo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ctaprofdenomina" class="java.lang.String"/>
+	<field name="dni" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fechaalta" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fechabaja" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="manautctrl_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecharenovacion" class="java.sql.Date"/>
+	<field name="denominaempresa" class="java.lang.String"/>
+	<field name="id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cursodenomina" class="java.lang.String"/>
+	<field name="contenidocurso" class="java.lang.String"/>
+	<field name="contenidolegislacion" class="java.lang.String"/>
+	<field name="cifempresa" class="java.lang.String"/>
+	<field name="dir1empresa" class="java.lang.String"/>
+	<field name="dir2empresa" class="java.lang.String"/>
+	<field name="telefonoempresa" class="java.lang.String"/>
+	<field name="emailempresa" class="java.lang.String"/>
+	<field name="codpostalesempresas" class="java.lang.String"/>
+	<field name="provinciasempresas" class="java.lang.String"/>
+	<field name="municipiosempresas" class="java.lang.String"/>
+	<field name="ciformador" class="java.lang.String"/>
+	<field name="denominaformador" class="java.lang.String"/>
+	<field name="dir1formador" class="java.lang.String"/>
+	<field name="dir2formador" class="java.lang.String"/>
+	<field name="codpostalesformador" class="java.lang.String"/>
+	<field name="provinciasformador" class="java.lang.String"/>
+	<field name="municipiosformador" class="java.lang.String"/>
+	<group name="FORMADORES">
+		<groupExpression><![CDATA[$F{denominaformador}+" "+$F{fechaalta}.toString()]]></groupExpression>
+		<groupHeader>
+			<band height="43">
+				<frame>
+					<reportElement uuid="31c22dd6-471c-4baf-8a07-ed6d305a6bfa" x="0" y="0" width="511" height="43"/>
+					<textField>
+						<reportElement uuid="7b8ebbf3-d6ea-4fee-b2a7-e280b7bdfd73" x="4" y="21" width="316" height="14"/>
+						<textElement>
+							<font fontName="Arial"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{denominaformador}]]></textFieldExpression>
+					</textField>
+					<staticText>
+						<reportElement uuid="8c2c3649-13cd-4249-8a69-573acf912350" x="4" y="0" width="100" height="21"/>
+						<textElement verticalAlignment="Middle">
+							<font fontName="Arial" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Formador:]]></text>
+					</staticText>
+					<textField>
+						<reportElement uuid="a676e9a6-0a69-4084-848e-55923fd36144" x="320" y="21" width="191" height="14"/>
+						<textElement/>
+						<textFieldExpression><![CDATA[$F{ciformador}]]></textFieldExpression>
+					</textField>
+					<staticText>
+						<reportElement uuid="4d0b7635-ebf6-4d7e-9f98-3e1b8f61200a" x="320" y="0" width="63" height="21"/>
+						<textElement verticalAlignment="Middle">
+							<font fontName="Arial" isBold="true"/>
+						</textElement>
+						<text><![CDATA[CIF:]]></text>
+					</staticText>
+					<rectangle>
+						<reportElement uuid="b6a23099-ec7d-4302-99bf-c569ab45b961" mode="Transparent" x="2" y="0" width="509" height="43"/>
+					</rectangle>
+				</frame>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="97">
+				<staticText>
+					<reportElement uuid="88c544ec-02f8-4f8e-b458-60f72662ff87" x="2" y="28" width="511" height="20"/>
+					<textElement textAlignment="Center">
+						<font fontName="Arial" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Firmado y Sellado Formador]]></text>
+				</staticText>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="4da62905-8ea1-4347-bf63-20b57c895849" x="1" y="48" width="512" height="20"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$F{fechaalta}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="CUSRO">
+		<groupExpression><![CDATA[]]></groupExpression>
+		<groupHeader>
+			<band height="47">
+				<frame>
+					<reportElement uuid="6464b198-a776-4d87-8f6b-39a99058add8" x="1" y="2" width="510" height="20"/>
+				</frame>
+				<textField>
+					<reportElement uuid="72080061-add1-4966-ba00-7bb3ae615d7e" x="0" y="2" width="511" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cursodenomina}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="5fab0537-a21b-4fea-9fa9-4e640224829f" x="0" y="37" width="63" height="10"/>
+					<textElement>
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DNI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="265512a1-991d-4e8f-b22e-6571759adc54" x="63" y="37" width="188" height="10"/>
+					<textElement>
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[APELLIDOS NOMBRES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d9d23eb7-1984-40d2-831f-92e0ca8b5295" x="251" y="37" width="69" height="10"/>
+					<textElement>
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[F.RENOVACION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="8443be41-fa4b-4fcd-9f1f-f7dab135acd1" x="320" y="37" width="85" height="10"/>
+					<textElement>
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CARGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1a55e4b1-de1a-470c-8f53-27e6ada19c20" x="405" y="37" width="106" height="10"/>
+					<textElement>
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CAT. PROFESIONAL]]></text>
+				</staticText>
+				<line>
+					<reportElement uuid="654b992b-7501-40c6-a105-96cee546bc85" x="1" y="46" width="511" height="1"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="190">
+				<textField>
+					<reportElement uuid="b29690d8-eef9-402e-a955-c1ee88e30133" x="2" y="17" width="511" height="96"/>
+					<textElement markup="html">
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{contenidocurso}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="d9394c27-3d96-436c-8016-ae8ee0c51dc2" x="3" y="113" width="182" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Prerequisito del Plan de formación del APPCC:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="6c4924a8-baf1-4d63-ac6f-cdfe5d1ef12d" x="4" y="133" width="507" height="57"/>
+					<textElement markup="html">
+						<font fontName="Arial" size="8" isItalic="true" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{contenidolegislacion}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band height="802" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement uuid="767740db-dd96-4648-8beb-b66fa89a4668" x="0" y="0" width="515" height="802" forecolor="#0D1117"/>
+			</rectangle>
+		</band>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="88" splitType="Stretch">
+			<frame>
+				<reportElement uuid="e5b48661-b338-4a07-9eb7-d531ac04f43e" mode="Transparent" x="0" y="0" width="513" height="81" forecolor="#1D0D0D" backcolor="#FFFFFF"/>
+				<rectangle>
+					<reportElement uuid="f89d2f0f-70c0-4459-864e-8c6b45178afe" x="0" y="57" width="381" height="23"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="6a2a9c4c-a17c-4371-a504-beafebd106f5" x="0" y="57" width="511" height="23" backcolor="#145FFA"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="f326e89f-e671-48d8-b1c3-c77b2ecbb71c" x="0" y="58" width="511" height="21" backcolor="#285CF2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["PLAN AUTOCONTROL (APPCC)"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="259b8eb6-361f-437a-850f-2955b070b3a0" x="2" y="1" width="199" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{appccdenomina}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="d8a27679-2e47-4ed9-a266-379f2b94643f" x="1" y="21" width="510" height="36"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{plandenomina}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="83" splitType="Stretch">
+			<frame>
+				<reportElement uuid="e0331f36-a979-400c-816c-dddc6cc9524d" x="2" y="0" width="511" height="80"/>
+				<textField>
+					<reportElement uuid="2da815d9-12f0-45a6-9f00-eddbfc05b038" x="2" y="63" width="177" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dir2empresa}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="e1d858d7-1916-4546-9a8e-45676f82faa3" x="352" y="63" width="157" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{telefonoempresa}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="c8a33948-745c-4262-afb4-0b048851422d" x="342" y="13" width="167" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{emailempresa}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="28f0a2ff-f7e4-4a1f-877f-35bd29af307f" x="352" y="43" width="157" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{codpostalesempresas}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="e9d36ed0-2ad9-4726-bd11-45b339908d08" x="188" y="63" width="130" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{provinciasempresas}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="2829b10a-c2d2-4489-9707-b96a60165920" x="188" y="43" width="130" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{municipiosempresas}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="903ce9ce-f0cc-443d-bda6-248634effe23" x="1" y="13" width="319" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{denominaempresa}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="17a04bc5-99c7-4360-aad8-e6db06fa63f0" x="2" y="43" width="181" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dir1empresa}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="af874900-f1a2-4047-9166-8df5ac5ce404" x="2" y="0" width="100" height="13"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Denominación Empresa]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="28e3ee17-044e-44c2-8ac4-2f8af6e5712b" x="342" y="28" width="100" height="13"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cod.Posta / Telefonos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="db35169a-b740-454e-ab9d-cabe2d6ff625" x="2" y="30" width="316" height="13"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Dirección]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9fbe1754-e11a-4679-bf4c-183e6d38f30c" x="342" y="0" width="100" height="13"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Email:]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement uuid="89a19909-0e65-4807-bb1f-802fd59cddc5" mode="Transparent" x="0" y="43" width="332" height="37"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="75dd3153-ea91-402f-b19e-afc748a9c6d6" mode="Transparent" x="342" y="42" width="168" height="38"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="35d6f796-dba9-4bb4-96e8-2edaeef15d49" mode="Transparent" x="342" y="13" width="167" height="17"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="78e5220d-b182-432f-8d9e-14c2f0b7108a" mode="Transparent" x="1" y="13" width="331" height="15"/>
+				</rectangle>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10">
+			<textField>
+				<reportElement uuid="6968f16f-c0af-459c-98d2-537f935c89c1" x="1" y="0" width="64" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dni}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e2af9d8d-479e-42f8-bfed-14c63d5fbd77" x="65" y="0" width="100" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{apellidos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d162c7e4-b450-44a8-a4c5-4b11344047d4" x="165" y="0" width="86" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="890119c2-0231-4b07-93a6-ac7c9cac5451" x="320" y="0" width="85" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cargo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cfc1890d-dd1c-4e98-9577-810ecc922950" x="405" y="0" width="106" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ctaprofdenomina}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="1813559b-2ac5-4d0b-94b9-ed52ffdfeb8a" x="251" y="0" width="69" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecharenovacion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="15" splitType="Stretch">
+			<line>
+				<reportElement uuid="460ebe54-4af4-400c-9bff-126ccab19c53" positionType="FixRelativeToBottom" x="0" y="3" width="512" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<frame>
+				<reportElement uuid="8432b842-4a82-4dd5-9c87-82e77f787396" mode="Opaque" x="2" y="0" width="513" height="13" forecolor="#D0B48E" backcolor="#285CF2"/>
+				<textField evaluationTime="Report">
+					<reportElement uuid="80352038-bad3-443b-bfce-bc62e4a10583" style="Column header" x="461" y="0" width="40" height="13" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="e5ae54ee-4e3d-4150-9311-8c910c64eac7" style="Column header" x="381" y="0" width="80" height="13" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement uuid="8b04f8d9-e926-4123-a51b-916e6a3ef6b0" style="Column header" x="2" y="0" width="197" height="13" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="1" splitType="Stretch"/>
+	</summary>
+</jasperReport>

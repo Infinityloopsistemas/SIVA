@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="planautocontrol_limpieza_subreport" language="groovy" pageWidth="510" pageHeight="100" orientation="Landscape" columnWidth="510" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="552a715d-9036-4a18-8cd2-3fb09545c897">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="pmanautctrlid" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     appcc_consumiblesdosis.`id` AS appcc_consumiblesdosis_id,
+     appcc_consumiblesdosis.`planautctrl_id` AS appcc_consumiblesdosis_planautctrl_id,
+     appcc_consumiblesdosis.`consumible_id` AS appcc_consumiblesdosis_consumible_id,
+     maestros_consumibles.`id` AS maestros_consumibles_id,
+     maestros_consumibles.`denominacion` AS maestros_consumibles_denominacion,
+     maestros_consumibles.`tipo` AS maestros_consumibles_tipo,
+     appcc_consumiblesdosis.`dosis` AS appcc_consumiblesdosis_dosis
+FROM
+     `maestros_consumibles` maestros_consumibles INNER JOIN `appcc_consumiblesdosis` appcc_consumiblesdosis ON maestros_consumibles.`id` = appcc_consumiblesdosis.`consumible_id`
+where appcc_consumiblesdosis.planautctrl_id =$P{pmanautctrlid}]]>
+	</queryString>
+	<field name="appcc_consumiblesdosis_id" class="java.lang.Integer"/>
+	<field name="appcc_consumiblesdosis_planautctrl_id" class="java.lang.Integer"/>
+	<field name="appcc_consumiblesdosis_consumible_id" class="java.lang.Integer"/>
+	<field name="maestros_consumibles_id" class="java.lang.Integer"/>
+	<field name="maestros_consumibles_denominacion" class="java.lang.String"/>
+	<field name="maestros_consumibles_tipo" class="java.lang.String"/>
+	<field name="appcc_consumiblesdosis_dosis" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="13" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="573bad73-f98a-4efc-bcf2-247d73b5a0a4" mode="Opaque" x="0" y="1" width="220" height="12" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Consumibles]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e66ce6a1-0188-42c9-8114-b0ba175a6d21" mode="Opaque" x="220" y="1" width="290" height="12" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dosis]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="de1111f5-2e83-4279-83d0-86d03603207c" x="220" y="12" width="290" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="118b3f6c-90c9-46f9-88d6-edca87bb49f9" x="0" y="11" width="167" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e750fb12-fb3e-4a8c-92e2-ed52bfcfea2f" x="0" y="0" width="155" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{maestros_consumibles_denominacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d8f0f90e-8784-428b-b0d4-34ae0c7d2c7d" x="220" y="0" width="290" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_consumiblesdosis_dosis}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="15ef1797-6381-444d-9100-bb9687db3b05" x="155" y="0" width="65" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{maestros_consumibles_tipo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

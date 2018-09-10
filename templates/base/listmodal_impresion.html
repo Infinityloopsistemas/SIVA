@@ -1,0 +1,45 @@
+{% extends "base/modal_list.html" %}
+{% load crispy_forms_tags %}
+{% block listatitulo %}
+    <h4>{{ auxiliar.etiqueta }}</h4>
+{% endblock %}
+{% block titulotabla %}
+    <tr>
+        {%  for obj in cabezera %}
+            <th>{{ obj }}</th>
+        {%  endfor %}
+    </tr>
+{%  endblock %}
+{% block cuerpotabla %}
+    {% if object_list %}
+        {% for object in object_list %}
+            <tr>
+
+                <td>
+                    <a href="{{ object.get_absolute_url }}">
+                        {{ object.denominacion }}
+                    </a>
+                </td>
+                <td>
+                    <button  class="btn btn-mini btn-success" type="button" onclick="window.open('{{ object.urlInformes }}/{{ acciones.id }}');return false;">Inicia Impresion</button>
+                </td>
+            </tr>
+        {% endfor %}
+
+
+    {% else %}
+        <p>No Existen {{ auxiliar.etiqueta }} Creadas.</p>
+    {% endif %}
+{% endblock %}
+{% block footer %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#myModal').modal('toggle').css({'width': '1024px','margin-left': function () {return -($(this).width() / 2);}})
+
+            $('#myModal').on('hidden', function () {
+                parent.history.back();
+            })
+
+        });
+    </script>
+{%  endblock %}

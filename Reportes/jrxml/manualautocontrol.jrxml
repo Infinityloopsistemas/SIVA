@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="manualautocontrol" language="groovy" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="20" bottomMargin="20" uuid="bfd0da00-af95-4c72-a089-9fe25f9848b1">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="PieChartDataset" uuid="5c03800d-15bf-431e-bdd9-650b570ba117"/>
+	<parameter name="pid" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     appcc_appcc.`denominacion` AS appcc_appcc_denominacion,
+     appcc_appcc.`fechaalta` AS appcc_appcc_fechaalta,
+     appcc_manualautocontrol.`objeto` AS appcc_manualautocontrol_objeto,
+     appcc_manualautocontrol.`contenido` AS appcc_manualautocontrol_contenido,
+     appcc_manualautocontrol.`alcance` AS appcc_manualautocontrol_alcance,
+     appcc_manualautocontrol.`marcolegal` AS appcc_manualautocontrol_marcolegal,
+     appcc_manualautocontrol.`procedimiento` AS appcc_manualautocontrol_procedimiento,
+     appcc_manualautocontrol.`tpplancontrol_id` AS appcc_manualautocontrol_tpplancontrol_id,
+     maestros_generales_tipoplancontrol.`denominacion` AS maestros_generales_tipoplancontrol_denominacion
+FROM
+     `appcc_appcc` appcc_appcc INNER JOIN `appcc_manualautocontrol` appcc_manualautocontrol ON appcc_appcc.`id` = appcc_manualautocontrol.`appcc_id`
+     INNER JOIN `maestros_generales_tipoplancontrol` maestros_generales_tipoplancontrol ON appcc_manualautocontrol.`tpplancontrol_id` = maestros_generales_tipoplancontrol.`id`
+where appcc_manualautocontrol.id = $P{pid}]]>
+	</queryString>
+	<field name="appcc_appcc_denominacion" class="java.lang.String"/>
+	<field name="appcc_appcc_fechaalta" class="java.sql.Date"/>
+	<field name="appcc_manualautocontrol_objeto" class="java.lang.String"/>
+	<field name="appcc_manualautocontrol_contenido" class="java.lang.String"/>
+	<field name="appcc_manualautocontrol_alcance" class="java.lang.String"/>
+	<field name="appcc_manualautocontrol_marcolegal" class="java.lang.String"/>
+	<field name="appcc_manualautocontrol_procedimiento" class="java.lang.String"/>
+	<field name="appcc_manualautocontrol_tpplancontrol_id" class="java.lang.Integer"/>
+	<field name="maestros_generales_tipoplancontrol_denominacion" class="java.lang.String"/>
+	<background>
+		<band height="802" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement uuid="767740db-dd96-4648-8beb-b66fa89a4668" x="0" y="0" width="515" height="802" forecolor="#6592D3"/>
+			</rectangle>
+		</band>
+	</background>
+	<title>
+		<band height="94" splitType="Stretch">
+			<frame>
+				<reportElement uuid="e5b48661-b338-4a07-9eb7-d531ac04f43e" mode="Transparent" x="0" y="0" width="513" height="81" forecolor="#1D0D0D" backcolor="#FFFFFF"/>
+				<rectangle>
+					<reportElement uuid="f89d2f0f-70c0-4459-864e-8c6b45178afe" x="0" y="0" width="381" height="80"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="42d01225-db98-45d9-9436-823d4e3f5fd4" x="381" y="0" width="132" height="80"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="da981603-0a73-4007-a827-a31427755563" x="0" y="30" width="381" height="20"/>
+					<textElement textAlignment="Center">
+						<font fontName="Arial" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{maestros_generales_tipoplancontrol_denominacion}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="cee03d2a-2d91-4504-bf10-85e0010db09b" x="2" y="3" width="190" height="20" forecolor="#160C0C"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{appcc_appcc_denominacion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="61556647-af0e-4838-90e7-49d778210bc9" x="381" y="0" width="54" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Código]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="0eeee398-704c-42b5-9b86-365a871c9d0c" x="381" y="20" width="54" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Versión]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="cdf0e6b7-3fcb-4599-94cc-d88b8b7817ab" x="381" y="40" width="54" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Fecha]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d062952a-31ec-44c7-a138-243e44ec3519" x="381" y="60" width="54" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Tipo]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="b128f35b-aeda-4da4-aa10-0ae1669dfbe4" x="435" y="0" width="78" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["PLDI"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="8a8b15bc-24b9-4bbc-8c51-171c87d740b7" x="435" y="20" width="78" height="19"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["5"]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="080525d6-226e-45c2-94b0-6ff32911aa36" x="435" y="40" width="78" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{appcc_appcc_fechaalta}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="2c8f188c-358d-477b-8fab-cf5272dac5e0" x="435" y="60" width="78" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["Manual"]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="193cb855-bd29-47ad-8334-7d3e66d2c7f5" x="381" y="20" width="132" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="28d64993-74e4-4190-bc29-4066e31a6e01" x="381" y="39" width="132" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="f16a9261-fde0-4b97-aad9-8cb9706dba78" x="381" y="57" width="132" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="e7bf7e7e-609e-4a53-8320-96b90e469115" x="435" y="0" width="1" height="79"/>
+				</line>
+				<rectangle>
+					<reportElement uuid="6a2a9c4c-a17c-4371-a504-beafebd106f5" x="0" y="57" width="381" height="23" backcolor="#145FFA"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="f326e89f-e671-48d8-b1c3-c77b2ecbb71c" x="0" y="58" width="381" height="21" backcolor="#285CF2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["MANUAL DE AUTOCONTROL (APPCC)"]]></textFieldExpression>
+				</textField>
+			</frame>
+			<line>
+				<reportElement uuid="5d024867-186b-443e-b861-a666e004cc90" x="0" y="86" width="513" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Double"/>
+				</graphicElement>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="500" splitType="Stretch">
+			<textField>
+				<reportElement uuid="9bb63d6d-fba9-465d-b53a-a8e2fa94eff0" x="0" y="0" width="515" height="500"/>
+				<textElement textAlignment="Justified" markup="html"/>
+				<textFieldExpression><![CDATA[$F{appcc_manualautocontrol_objeto}
++"<p> <p>"+
+$F{appcc_manualautocontrol_alcance}
++"<p> <p>"+
+$F{appcc_manualautocontrol_procedimiento}
++"<p> <p>"+
+$F{appcc_manualautocontrol_contenido}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="7" splitType="Stretch">
+			<line>
+				<reportElement uuid="460ebe54-4af4-400c-9bff-126ccab19c53" positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<frame>
+				<reportElement uuid="8432b842-4a82-4dd5-9c87-82e77f787396" mode="Opaque" x="2" y="0" width="513" height="13" forecolor="#D0B48E" backcolor="#285CF2"/>
+				<textField evaluationTime="Report">
+					<reportElement uuid="80352038-bad3-443b-bfce-bc62e4a10583" style="Column header" x="461" y="0" width="40" height="13" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="e5ae54ee-4e3d-4150-9311-8c910c64eac7" style="Column header" x="381" y="0" width="80" height="13" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement uuid="8b04f8d9-e926-4123-a51b-916e6a3ef6b0" style="Column header" x="2" y="0" width="197" height="13" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

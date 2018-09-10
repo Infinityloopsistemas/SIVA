@@ -1,0 +1,28 @@
+{% extends "base/base.html" %}
+
+{% block body %}
+
+	<div class="box corner-all">
+                <!--box header-->
+                <div class="box-header grd-white color-black corner-top">
+                    <div class="header-control">
+                        <a data-box="collapse"><i class="icofont-caret-up"></i></a>
+                        <a data-box="close">&times;</a>
+                    </div>
+                    <span>Formulario de contacto</span>
+                </div><!--/box header-->
+                <!--box body-->
+                <div class="box-body corner-bottom">
+                   
+				        <form action="" method="post" id="my_form" accept-charset="utf-8">
+				    		{{ form.as_p }}
+				    		<div class="form-actions">
+
+                                <input id="submit-id-enviar" class="btn btn-primary" type="submit" value="Enviar" name="Enviar">
+
+                            </div>
+						</form>
+				      
+				</div>
+            </div>
+{%  endblock %}

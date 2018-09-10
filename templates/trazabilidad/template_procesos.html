@@ -1,0 +1,11 @@
+<tr>
+
+    <td>
+        <a href="{{ node.get_absolute_url }}">
+          {{ node.orden }}-{{ node.denominacion }}
+        </a>
+    </td>
+    <td>
+        <button  class="btn btn-mini btn-danger" type="button" onclick="document.location.href='{{ acciones.eliminar }}/{{ node.pk }}/';return false;">Eliminar</button>
+    </td>
+</tr>

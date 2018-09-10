@@ -1,0 +1,86 @@
+{% extends "base/listas.html" %}
+{% load dajaxice_templatetags %}
+{% load crispy_forms_tags %}
+{% block extrahead %}
+    {% dajaxice_js_import %}
+    <link href="{{ STATIC_URL }}Bootstrap-Tree-master/bootstrap-tree/css/bootstrap-tree.css" rel="stylesheet">
+{% endblock %}
+
+{% block listatitulo %}
+            <h4>{{ auxiliar.etiqueta }}</h4>
+    <button class="btn btn-mini btn-primary" type="button" onclick="document.location.href='{{ acciones.crear}}';return false;"> Añadir Nuevo {{ auxiliar.etiqueta }}</button>
+{% endblock %}
+
+{#                {% block arbol %}#}
+{#                <div class="span3">#}
+{#                    <div class="well">#}
+{#                      <ul class="tree">#}
+{#                        <li><a href="javascript:verArbol" id="listarbol" role="branch" class="tree-toggle closed" data-toggle="branch" >Cuadros Gestion</a></li>#}
+{#                         </ul>#}
+{#                    </div>#}
+{#                </div>#}
+{#                {% endblock %}#}
+
+
+                {% block titulotabla %}
+                   <tr>
+                                {%  for obj in cabezera %}
+                                    <th>{{ obj }}</th>
+                                {%  endfor %}
+                   </tr>
+                        {%  endblock %}
+                        {% block cuerpotabla %}
+                            {% if object_list %}
+                                {% for object in object_list %}
+                                    <tr>
+
+                                        <td>
+                                            <a href="{{ object.get_absolute_url }}">
+                                                {{ object.denominacion }}
+                                            </a>
+                                        </td>
+                                        {% if object.urlDocumentos != None %}
+                                        <td>
+                                            <button  class="btn btn-mini" type="button" onclick="document.location.href='{{ object.urlDocumentos }}';return false;">Documentos</button>
+                                        </td>
+                                        {% endif %}
+                                        {% if object.urlImpresion != None %}
+                                            <td>
+                                                <button  class="btn btn-mini" type="button" onclick="document.location.href='{{ object.urlImpresion }}';return false;">Imprimir</button>
+                                            </td>
+                                        {% endif %}
+                                        <td>
+                                            <button  class="btn btn-mini btn-danger" type="button" onclick="document.location.href='{{ acciones.eliminar }}/{{ object.id }}/';return false;">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+
+                            {% else %}
+                                <p>No Existen {{ auxiliar.etiqueta }} Creadas.</p>
+                            {% endif %}
+                        {% endblock %}
+
+
+{%  block footer %}
+  <script type="text/javascript" src="{{ STATIC_URL }}dajax/jquery.dajax.core.js"></script>
+  <script src="{{ STATIC_URL }}Bootstrap-Tree-master/bootstrap-tree/js/bootstrap-tree.js"></script>
+  <script src="{{ STATIC_URL }}Bootstrap-Tree-master/example.js"></script>
+{#   <script type="text/javascript">#}
+{##}
+{#        function verArbol(data)#}
+{#        {#}
+{##}
+{#         return data#}
+{##}
+{##}
+{#        }#}
+{##}
+{#        $(document).ready(function() {#}
+{##}
+{#            Dajaxice.appcc.arbolCuadrosGestion(verArbol,{"empresaid":{{ nombre_empresa.id }}})#}
+{##}
+{##}
+{#        });#}
+{#  </script>#}
+{%  endblock %}

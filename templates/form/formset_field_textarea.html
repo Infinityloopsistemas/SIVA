@@ -1,0 +1,15 @@
+{% load crispy_forms_field %}
+{% load wysiwyg %}
+{% wysiwyg_setup  %}
+ <div class="controls">
+    <textarea id="{{ field.auto_id }}"  name="{{ field.auto_id|slice:"3:" }}"{% if required %} required {% endif %} class="span10 textarea">{% if field.value %} {{ field.value }} {% endif %}</textarea>
+</div>
+<script type="text/javascript">
+    (function(){
+        var config =''
+        django_wysiwyg.enable('', '{{ field.auto_id }}', config);
+    })();
+</script>
+
+
+

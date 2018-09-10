@@ -1,0 +1,300 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+{% load selectable_tags %}
+{% load trz_temp_tags %}
+{% include_jquery_libs %}
+{% include_ui_theme 'ui-lightness' %}
+{% block extrahead %}
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/base/jquery-ui.css" type="text/css">
+    <link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+<div class="row-fluid" >
+
+        <div class="span12">
+<form action="." method="post">
+
+	<div class="box corner-all">
+                <div class="box-header grd-white color-silver-dark corner-top" >
+                   <span>  Consulta {{ auxiliar.etiqueta }} </span>
+			</div>
+
+
+            <div class="box-tab box-body">                    	
+                     	<div class="box-header corner-top">
+                        	<ul class="nav nav-tabs" id="tab-stat">
+                        		{% if request.method == 'GET' %}
+                            		<li class="active"><a data-toggle="tab" href="#tab-busqueda"><b>Busqueda</b></a></li>
+                            		<li><a data-toggle="tab" href="#tab-resultado"><b>Resultado</b></a></li>
+                            	{% endif %}
+                            	{% if request.method == 'POST'%}
+                            		<li><a data-toggle="tab" href="#tab-busqueda"><b>Busqueda</b></a></li>
+                            		<li class="active"><a data-toggle="tab" href="#tab-resultado"><b>Resultado</b></a></li>
+                            	{% endif %}
+                            	
+                        	</ul>
+						</div>
+                        
+                        <div class="tab-content">
+                        	
+                        	{% if request.method == 'GET' %}
+
+                             <div class="tab-pane fade in active" id="tab-busqueda" style="height:200px">
+                             
+		                        
+
+                            		{{ form1.as_p }}
+
+                   			 	
+		                     </div>
+
+                             <div class="tab-pane fade" id="tab-resultado">
+                             	<p>No se ha realizado busqueda</p>
+		                     </div>
+		                     
+		                     {% endif %}
+		                     {% if request.method == 'POST' %}
+
+                             <div class="tab-pane fade" id="tab-busqueda" style="height:200px">
+                             
+		                        
+
+                            		{{ form1.as_p }}
+
+                   			 	
+		                     </div>
+
+                             <div class="tab-pane fade  in active" id="tab-resultado">
+                             	
+                             	<div>
+                             		{% if not stockActual %}
+                            			<h4>Búsqueda : {{ busqueda }}</h4>
+                            		{% else %}
+                            			<h4>Búsqueda : Total existencias</h4>
+                            		{% endif %}
+                            	</div>
+                             	{% if not formdetail2.forms and not formdetail1.forms and not stockActual %}
+                             		<p>No se ha realizado busqueda</p>
+                             	{% else %}
+                             		<button  class="btn btn-mini btn-success" type="button" onclick="window.open('{{ urlImpresion }}');return false;">Imprimir Búsqueda</button>
+                             		{% if formulario == 'lote' %}
+                             		
+                             		{% if formdetail1.forms %}
+                             		<div>
+                            			<h6>Trazabilidad hacia atrás</h4>
+                            		</div>
+                             		<table class="table table-bordered table-striped responsive dataTable">
+                            			<thead>
+                            				<th>Albaran</th>
+                            				<th>Proveedor</th>
+                            				<th>Ref</th>
+                            				<th>Stock</th>
+                            				<th>Fecha caducidad</th>
+                            			</thead>                            		
+		                            {% for form_line in formdetail1.forms %}
+		                            	<tr>
+		                            		<td>
+												{{ form_line.albaran }}
+		                                	</td>
+		                                	<td>
+												{{ form_line.proveedor }}
+		                                	</td>
+											<td>
+												{{ form_line.reflote }}
+		                                	</td>
+		                                	<td>
+												{{ form_line.stock }}
+		                                	</td>
+		                                	<td>
+												{{ form_line.fechacad }}
+		                                	</td>
+		                               	</tr>
+		
+		                            {% endfor %}
+		                            	
+		                            </table>
+                             		{% endif %}                             		
+		                            {% if formdetail2.forms %}
+                             		<div>
+                            			<h6>Trazabilidad hacia adelante</h4>
+                            		</div>
+                             		<table class="table table-bordered table-striped responsive dataTable">
+                            			<thead>
+                            				<th>Albaran</th>
+                            				<th>Ref</th>
+                            				<th>Stock</th>
+                            				<th>Fecha caducidad</th>
+                            			</thead>                            		
+		                            {% for form_line in formdetail2.forms %}
+		                            	<tr>
+		                            		<td>
+												{{ form_line.albaran }}
+		                                	</td>
+											<td>
+												{{ form_line.reflote }}
+		                                	</td>
+		                                	<td>
+												{{ form_line.stock }}
+		                                	</td>
+		                                	<td>
+												{{ form_line.fechacad }}
+		                                	</td>
+		                               	</tr>
+		
+		                            {% endfor %}
+		                            	<tfoot>
+		                            		<tr>
+		                            			<td>											
+		                                		</td>
+												<td style="font-weight:bold; text-align: right;">
+													Total
+		                                		</td>
+		                                		<td>
+		                                			{{ stockConsumido }}
+		                                		</td>
+		                                		<td>
+		                                		</td>
+		                               	</tr>
+		                            	</tfoot>
+		                            </table>
+                             		{% endif %}
+		                            {% else %}
+		                            {% if formulario == 'producto' %}
+		                            <table class="table table-bordered table-striped responsive dataTable">
+                            			<thead>
+                            				<th>Ref</th>
+                            				<th>Stock Cantidad</th>
+                            				<th>Stock Peso</th>
+                            				<th>Fecha caducidad</th>
+                            			</thead>
+		                            {% for form_line in formdetail2.forms %}
+		                            	<tr>
+											<td>
+												{{ form_line.reflote }}
+		                                	</td>
+		                                	<td>
+												{{ form_line.cantidad }}
+		                                	</td>
+		                                	<td>
+												{{ form_line.peso }}
+		                                	</td>
+		                                	<td>
+												{{ form_line.fechacad }}
+		                                	</td>
+		                               	</tr>
+		                            {% endfor %}
+		                            <tfoot>
+		                            		<tr>
+		                            			<td style="font-weight:bold; text-align: right;">
+													Total
+		                                		</td>
+		                            			<td>
+		                            				{{ stockCantidad }}											
+		                                		</td>												
+		                                		<td>
+		                                			{{ stockPeso }}
+		                                		</td>
+		                                		<td>
+		                                		</td>
+		                               	</tr>
+		                            	</tfoot>
+		                            </table>
+		                            {% else %}
+		                            
+		                            <table class="table table-bordered table-striped responsive dataTable">
+                            			<thead>
+                            				<th>REF. Lote</th>
+                            				<th>Producto</th>
+                            				<th>Stock Cantidad</th>
+                            				<th>Stock Peso</th>
+                            				<th>Fecha caducidad</th>
+                            			</thead>
+                            			{% for stock in stockActual %}		                            
+		                            	<tr>
+		                            		<td>
+												{{ stock.referencia }}
+		                                	</td>
+											<td>
+												{{ stock.producto }}
+		                                	</td>
+		                                	<td>
+		                                	{% if stock.cant %}
+												{{ stock.cant }}
+											{% endif %}
+		                                	</td>
+		                                	<td>
+		                                	{% if stock.peso %}
+												{{ stock.peso }}
+											{% endif %}
+		                                	</td>
+		                                	<td>
+												{{ stock.fechacaducidad|pasarFechaESP }}
+		                                	</td>
+		                               	</tr>
+		                               	{% endfor %}		                            
+		                            	<tfoot>
+		                            		<tr>
+		                            			<td>
+		                                		</td>
+		                            			<td style="font-weight:bold; text-align: right;">
+													Total
+		                                		</td>
+		                            			<td>
+		                            				{{ stockCantidad }}											
+		                                		</td>												
+		                                		<td>
+		                                			{{ stockPeso }}
+		                                		</td>
+		                                		<td>
+		                                		</td>
+		                               		</tr>
+		                            	</tfoot>
+		                            </table>
+		                            
+		                            {% endif %}
+		                            {% endif %}
+		                        {% endif %}
+
+
+                   			 	
+		                     </div>
+		                     {% endif %}
+						</div>
+						<div class="form-actions">
+
+                            <input id="submit-id-update" class="btn btn-primary" type="submit" value="Buscar" name="Update">
+                            <input id="submit-id-update" class="btn btn-primary" type="submit" value="Consultar total existencias" name="FindAll">
+                            <input id="button-id-limpiar" class="btn" type="submit" value="Limpiar" name="limpiar">
+
+                        </div>
+                        
+
+             </div>
+    </div>
+</form>
+</div>
+</div>
+			
+
+{%  endblock %}
+
+{% block footer %}
+    <script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('[data-form=datepicker]').datepicker({format : 'dd/mm/yyyy',  language: 'es'  });
+            
+            $('[data-form=uniform]').uniform()
+
+            // wysihtml5
+            $('[data-form=wysihtml5]').each(function(index)
+            {
+                $(this).wysihtml5();
+            });
+
+
+        });
+
+    </script>
+{%  endblock %}

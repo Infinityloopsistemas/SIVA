@@ -1,0 +1,487 @@
+{% load mis_filtros %}
+{% load compress %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Panel Control (SIVA)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="infinityloop">
+
+    <!-- google font -->
+    <link href="//fonts.googleapis.com/css?family=Aclonica:regular" rel="stylesheet" type="text/css" />
+
+    <!-- styles -->
+    
+    {% compress css %}
+    <link href="{{ STATIC_URL }}stilearn/css/bootstrap.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/stilearn.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/stilearn-responsive.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/stilearn-helper.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/stilearn-icon.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/font-awesome.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/animate.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/uniform.default.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/datepicker.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/select2.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/fullcalendar.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/bootstrap-wysihtml5.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/responsive-tables.css" rel="stylesheet">    
+    <link href="{{ STATIC_URL }}css/jqtree.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}uploadfiles/css/dropzone.css" rel="stylesheet" />
+	<link href="{{ STATIC_URL }}uploadfiles/css/upload.css" rel="stylesheet" />
+	{% endcompress %}
+
+    <link href="//givasl.com/web/css/im_livechat.external_lib" rel="stylesheet"/>
+    <script src="//givasl.com/web/js/im_livechat.external_lib" type="text/javascript"></script>
+    <script src="//givasl.com/im_livechat/loader/givasl/1" type="text/javascript"></script>
+
+
+    {% block extrahead %}
+
+
+    {% endblock %}
+    <title>
+        {% block titulo %}
+        {% endblock %}
+    </title>
+
+</head>
+<body>
+<header class="header">
+    <!--nav bar helper-->
+    <div class="navbar-helper">
+        <div class="row-fluid">
+            <!--panel site-name-->
+            <div class="span2">
+                <div class="panel-sitename">
+                    <h2><a href="/panelprincipal"><span class="color-teal">SI</span>VA</a></h2>
+                </div>
+            </div>
+            <!--/panel name-->
+            <div class="span6"></div>
+            {% if user.is_authenticated %}
+            <div class="span2">
+                    <div class="btn-group">
+                        <a class="btn btn-inverse btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+                            Opciones
+                        </a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        	{% if nombre_empresa.hay_landing_page %}
+                            <li><a tabindex="-1" href="/desconectar/?next=/{{ nombre_empresa.url }}">Desconectar</a></li>
+                            <li><a tabindex="-1" href="/desconectar/?next=/sign_in/{{ nombre_empresa.url }}">Cambiar usuario</a></li>
+                            {% else %}
+                            <li><a tabindex="-1" href="/desconectar/?next=/">Desconectar</a></li>
+                            <li><a tabindex="-1" href="/desconectar/?next=/sign_in/">Cambiar usuario</a></li>
+                            {% endif %}
+                            <li><a tabindex="-1" href="{{ STATIC_URL }}documentos/MANUAL_SIVA_v1.pdf" target="_blank">Manual Usuario</a></li>
+
+                        </ul>
+
+                    </div>
+                <div class="span4">
+                    <div class="contact-item">
+                        <div class="pull-left">
+                            <img class="contact-item-object" style="width: 32px; height: 32px" src="{{ STATIC_URL }}stilearn/img/user-thumb-mini.jpg">
+                        </div>
+                        <div class="contact-item-body">
+                            {% if user.is_active %}
+                                <div class="status" title="Activo"><i class="icofont-certificate color-green"></i></div>
+
+                                <p class="contact-item-heading bold color-white span4">{{ user.username }}
+
+{#                                <a><small class="muted span4">#}
+{#                                    {% if user.is_staff %}#}
+{#                                        Administrador#}
+{#                                    {% else %}#}
+{#                                        Normal#}
+{#                                    {% endif %}#}
+{#                                </small></a>#}
+                                </p>
+                            {%  else %}
+                                <div class="status" title="Desactivados"><i class="icofont-certificate color-red"></i></div>
+                            {%  endif %}
+                        </div>
+
+                    </div>
+                 </div>
+                </div>
+
+              </div>
+            {% endif %}
+        </div><!--/nav bar helper-->
+</header>
+<!-- section content -->
+<section class="section">
+    <div class="row-fluid">
+        <!-- span side-left -->
+        <div class="span1">
+    <!--side bar-->
+    <aside class="side-left">
+        <ul class="sidebar">
+            <li class="menu_principal"> <!--always define class .first for first-child of li element sidebar left-->
+                <a href="/panelprincipal/" title="dashboard">
+                    <div class="helper-font-24">
+                        <i class="icofont-dashboard"></i>
+                    </div>
+                    <span class="sidebar-text">Panel Principal</span>
+                </a>
+            </li>
+            <li class="menu_principal">
+                <a href="/contacto/" title="Contacto">
+                    <div class="helper-font-24">
+                        <i class="icofont-bullhorn"></i>
+                    </div>
+                    <span class="sidebar-text">Contacto</span>
+                </a>
+            </li>
+            {% if not request.user|has_group:"operarios" %}
+            <li class="menu_principal">
+                <a href="/trazabilidad/panel" title="trazabilidad">
+                    <div class="helper-font-24">
+                        <i class="icofont-eye-open"></i>
+                    </div>
+                    <span class="sidebar-text">Trazabilidad</span>
+                </a>
+            </li>
+            <li class="menu_principal">
+                <a href="/productos/panel" title="productos">
+                    <div class="helper-font-24">
+                        <i class="icofont-gift"></i>
+                    </div>
+                    <span class="sidebar-text">Productos</span>
+                </a>
+            </li>
+            <li class="menu_principal">
+                <a href="/appcc/panel" title="appcc">
+                    <div class="helper-font-24">
+                        <i class="icofont-magnet"></i>
+                    </div>
+                    <span class="sidebar-text">APPCC</span>
+                </a>
+            </li>
+            {% if request.user|has_group:"administradores" or request.user|has_group:"veterinarios"%}
+            <li class="menu_principal">
+                <a href="/maestros/panel" title="maestros">
+                    <div class="helper-font-24">
+                        <i class="icofont-edit"></i>
+                    </div>
+                    <span class="sidebar-text">Maestros</span>
+                </a>
+            </li>
+            <li class="menu_principal">
+                <a href="/maestros_generales/panel" title="generales">
+                    <div class="helper-font-24">
+                        <i class="icofont-pencil"></i>
+                    </div>
+                    <span class="sidebar-text">Generales</span>
+                </a>
+            </li>
+            {% endif %}
+            {% if not request.user|has_group:"responsables" %}
+            <li class="menu_principal">
+                <a href="/admin/" title="administracion">
+                    <div class="helper-font-24">
+                        <i class="icofont-wrench"></i>
+                    </div>
+                    <span class="sidebar-text">Administracion</span>
+                </a>
+            </li>
+            {% endif %}
+			{% endif %}
+        </ul>
+    </aside><!--/side bar -->
+</div><!-- span side-left -->
+
+        <!-- span content -->
+        <div class="span9">
+                <!-- content -->
+                <div class="content">
+                    <!-- content-header -->
+                    <div class="content-header">
+
+                            <h2><i class="icofont-home"></i> <a> {{ nombre_empresa.descripcion }} </a>{% block panel_titulo %}{% endblock %}</h2>
+                    </div><!-- /content-header -->
+
+                    <!-- content-breadcrumb -->
+                    <div class="content-breadcrumb">
+                    <!--breadcrumb-->
+                        <ul class="breadcrumb">
+                          <i class="icofont-home"></i>
+                        {% for breadcrumb in request.breadcrumbs %}
+                           <li> <a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a>{% if not forloop.last %} &raquo; </li>{% else %}<li class="active"> &raquo;{{ breadcrumb.name }}</li>  {% endif %}
+                        {% endfor %}
+                        </ul>
+                        <!--/breadcrumb-->
+                    </div>
+                    <!-- /content-breadcrumb -->
+
+                    <!-- content-body -->
+                    <div class="content-body">
+                        {% block body %} {% endblock %}
+                    </div><!--/content-body -->
+
+                </div><!-- /content -->
+        </div><!-- /span content -->
+
+		{% if not request.user|has_group:"operarios" %}
+        <!-- span side-right -->
+           <div class="span2">
+               <!-- side-right -->
+               <aside class="side-right">
+                   <!-- sidebar-right -->
+                   <div class="sidebar-right">
+                       <!--sidebar-right-header-->
+                       <div class="sidebar-right-header">
+                           <div class="sr-header-right">
+                               <h2><span class="label label-info"> información</span></h2>
+                           </div>
+                           <div class="sr-header-left">
+                               <p class="bold">Mensajes</p>
+                               <small class="muted">Fecha</small>
+
+                           </div>
+                       </div><!--/sidebar-right-header-->
+                       <!--sidebar-right-control-->
+                       <div class="sidebar-right-control">
+                           <ul class="sr-control-item">
+                               <li class="active"><a href="#alt1" data-toggle="tab" title="Acciones Rapidas"><i class="icofont-tasks"></i></a></li>
+{#                               <li><a href="#alt2" data-toggle="tab" title="alternative 2"><i class="icofont-fullscreen"></i></a></li>#}
+{#                               <li rel="tooltip-bottom" title="view site"><a href="index.html" target="_BLANK"><i class="icofont-external-link"></i></a></li>#}
+                           </ul>
+                       </div><!-- /sidebar-right-control-->
+                       <!-- sidebar-right-content -->
+                       <div class="sidebar-right-content">
+                           <div class="tab-content">
+                               <!--alternate 1-->
+                               <div class="tab-pane fade active in" id="alt1">
+
+
+                                   <div class="side-nav">
+                                       <ul class="nav-side">
+                                           {% if messages %}
+                                              {%  for message in messages %}
+                                                <li>
+                                                   <i class="icofont-random"></i>
+                                                   <span class="label label-important" >{{ message  }}</span>
+                                               </a>
+                                                </li>
+                                              {% endfor %}
+                                           {% endif %}
+
+                                       </ul>
+                                   </div>
+
+                                   <div class="divider-content"><span></span></div>
+                                   <button id="butask" class="btn btn-block btn-mini btn-primary">Tareas Hoy</button>
+                                   <div class="side-task">
+
+                                   </div>
+                                   {% block print_tareas %}
+                                   {% endblock %}
+
+                                   {% block imp_reg %}
+                                   {% endblock %}
+                                   {% block graf_reg %}
+                                   {% endblock %}
+
+                                    {% block sensor_reg %}
+                                   {% endblock %}
+                                   <div class="divider-content"><span></span></div>
+                                   {%  if False %}
+                                   <a class="twitter-timeline" href="https://twitter.com/GIVASL_noticias" data-widget-id="582526946984226816">Tweets por el @GIVASL_noticias.</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://{{ STATIC_URL }}twitter/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                                   {%  endif %}
+        						   <!-- <a class="twitter-timeline" href="https://twitter.com/GIVASL_noticias" data-widget-id="582526946984226816">Tweets por el @GIVASL_noticias.</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+ -->
+{##}
+{#                                   <div class="side-box">#}
+{##}
+{#                                   </div>#}
+{##}
+{#                                   <div class="divider-content"><span></span></div>#}
+
+                               </div><!--/alternative 1-->
+
+                               <!--alternative 2-->
+                               <div class="tab-pane fade" id="alt2">
+                                   <div class="divider-content"><span></span></div> <!--divider-->
+
+                                   <div class="side-box">
+
+                                   </div>
+
+                                   <div class="divider-content"><span></span></div> <!--divider-->
+
+                                   <div class="side-box">
+
+                                   </div>
+
+                                   <div class="divider-content"><span></span></div> <!--divider-->
+                               </div><!--/alternative 2-->
+
+                           </div>
+                       </div><!-- /sidebar-right-content -->
+                   </div><!-- /sidebar-right -->
+               </aside><!-- /side-right -->
+           </div><!-- /span side-right -->
+		{% endif %}
+           <!-- side-right -->
+
+
+  </div>
+</section>
+
+<!-- section footer -->
+<footer>
+    <a rel="to-top" href="#top"><i class="icofont-circle-arrow-up"></i></a>
+</footer>
+
+
+
+<!--  <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script> -->
+{% compress js %}
+<script src="{{ STATIC_URL }}twitter/widgets.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/jquery.js"></script>
+
+<script src="{{ STATIC_URL }}stilearn/js/jquery-ui.min.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/bootstrap.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/uniform/jquery.uniform.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/datepicker/bootstrap-datepicker.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/datepicker/bootstrap-datepicker-es.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/select2/select2.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/wysihtml5/wysihtml5-0.3.0.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/wysihtml5/bootstrap-wysihtml5.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/datatables/jquery.dataTables.min.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/datatables/extras/ZeroClipboard.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/datatables/extras/TableTools.min.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/datatables/DT_bootstrap.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/responsive-tables/responsive-tables.js"></script>
+<script src="{{ STATIC_URL }}js/tree.jquery.js"></script>
+<script src="{{ STATIC_URL }}js/spin.min.js"></script>
+
+<!-- required stilearn template js, for full feature-->
+<script src="{{ STATIC_URL }}stilearn/js/holder.js"></script>
+<script src="{{ STATIC_URL }}stilearn/js/stilearn-base.js"></script>
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $(".menu_principal").click(function(){
+                $("li.menu_principal").each( function (index)
+                {   $(this).removeClass("active first"); })
+                $(this).addClass("active first menu_principal")
+
+    	})
+
+
+        // uniform
+        $('[data-form=uniform]').uniform();
+
+
+        function listaTareas(data){
+            $('.side-task > .task').remove();
+            for (i=0; i<data.length;i++)
+                    $('.side-task').append($('<div class="task fade in"> <i class="icofont-ok-sign color-green"> <span class="task-desc">'+data[i].tarea+'</span> </div>'));
+        }
+
+{#        <div class="task active">#}
+{#                    <strong>Tareas</strong>#}
+{#                    </div>#}
+{#                    <div class="task fade in">#}
+{#                    <i class="icofont-ok-sign color-green" title="success"></i>#}
+{#                    <span class="task-desc"></span>#}
+{#                    <button data-dismiss="alert" class="close">&times;</button>#}
+{#                    </div>#}
+{#            <div class="task fade in">#}
+{#                    <i class="icofont-remove-sign color-red" title="failed"></i>#}
+{#                    <span class="task-desc"></span>#}
+{#                    <button data-dismiss="alert" class="close">&times;</button>#}
+{#            </div>#}
+
+
+
+
+
+        $('#butask').click(function(e){
+            Dajaxice.appcc.eventosHoy(listaTareas);
+        });
+
+
+        // datatables
+        $('#datatables').dataTable( {
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "aaSorting": [],
+            "oLanguage": {
+                "sProcessing":     "Procesando...",
+                "sLengthMenu":     "Mostrar _MENU_ registros",
+                "sZeroRecords":    "No se encontraron resultados",
+                "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix":    "",
+                "sSearch":         "Buscar:",
+                "sUrl":            "",
+                "sInfoThousands":  ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst":    "Primero",
+                    "sLast":     "Último",
+                    "sNext":     "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "sLengthMenu": "_MENU_ registros por pagina"
+            }
+        });
+
+        // datatables table tools
+        $('#datatablestools').dataTable({
+            "sDom": "<'row-fluid'<'span6'T><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "oTableTools": {
+                "aButtons": [
+                    "copy",
+                    "print",
+                    {
+                        "sExtends":    "collection",
+                        "sButtonText": 'Save <span class="caret" />',
+                        "aButtons":    [
+                            "xls",
+                            "csv",
+                            {
+                                "sExtends": "pdf",
+                                "sPdfOrientation": "landscape",
+                                "sPdfMessage": "Your custom message would go here."
+                            }
+                        ]
+                    }
+                ],
+                "sSwfPath": "{{ STATIC_URL }}stilearn/js/datatables/swf/copy_csv_xls_pdf.swf"
+            }
+        });
+    });
+
+</script>
+{% endcompress %}
+{% include 'autocomplete_light/static.html' %}
+
+{% block footer %}
+{% endblock %}
+
+
+
+
+</body>
+</html>

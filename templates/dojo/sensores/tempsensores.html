@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+<link rel="Stylesheet" type="text/css" href="{{ STATIC_URL }}flat/CSS/dojo/flat.css"/>
+<link rel="Stylesheet" type="text/css" href="{{ STATIC_URL }}flat/CSS/dgrid/css/dgrid.css"/>
+<link rel="Stylesheet" type="text/css" href="{{ STATIC_URL }}flat/CSS/dgrid/css/skins/skin.css"/>
+<link rel="Stylesheet" type="text/css" href="{{ STATIC_URL }}flat/CSS/esri/css/esri_custom.css"/>
+ <style type="text/css">
+        @import "{{STATIC_URL}}dojox/widget/Calendar/Calendar.css";
+ </style>
+<meta charset="UTF-8">
+<style type="text/css">
+    body, html {
+        font-family: helvetica, arial, sans-serif;
+        font-size: 90%;
+    }
+</style>
+
+<title>SENSORES TEMPERATURAS</title>
+
+<script src="{{ STATIC_URL }}dojo/dojo.js" data-dojo-config="async:true"></script>
+
+<script>
+        var empid    = {{ empresa }};
+        var urlserver= "{{ url_server }}";
+        var token    = " Token {{ token }}";
+        require(["sensores/main"], function(main){
+
+            console.log("Entra en aplicacion")
+
+            var app = main(empid,urlserver,token);
+
+            console.log(app);
+
+        });
+
+
+</script>
+
+</head>
+
+<body>
+<div id="appLayout" style="width: 1600px; height: 800px;"></div>
+</body>
+</html>

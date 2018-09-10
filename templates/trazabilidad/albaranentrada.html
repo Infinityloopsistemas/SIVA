@@ -1,0 +1,170 @@
+{% extends "base/base.html" %}
+{% load dajaxice_templatetags %}
+{% load crispy_forms_tags %}
+{% load selectable_tags %}
+{% include_jquery_libs %}
+{% include_ui_theme 'ui-lightness' %}
+{% block extrahead %}
+    {% dajaxice_js_import %}
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/base/jquery-ui.css" type="text/css">
+    <link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet">
+    <style type="text/css">
+        .add-row {
+            padding-left:18px;
+            background:url({{ STATIC_URL }}images/add.png) no-repeat left center;
+        }
+        .delete-row {
+            display:block;
+            margin:6px 0 0 0;
+            padding-left:18px;
+            background:url({{ STATIC_URL }}images/delete.png) no-repeat left center;
+        }
+        .dynamic-form {
+            margin-bottom:6px;
+            padding-bottom:6px;
+            border-bottom:1px dotted #ccc;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+
+         <form action="." method="post" enctype="multipart/form-data">{% csrf_token %}
+                <div class="box corner-all">
+                    <div class="box-header grd-white color-silver-dark corner-top" >
+                        <div class="header-control">
+                            <a data-box="collapse"><i class="icofont-caret-up"></i></a>
+                            <a data-box="close">×</a>
+                        </div>
+                        <span>  {{ auxiliar.etiqueta }} </span>
+
+                    </div>
+                    <div class="box-body">
+
+                        {%  crispy  form form.helper %}
+
+                        {{ form_detail.management_form }}
+                        <table class="table table-bordered table-striped responsive">
+                            <thead>
+                            <th class="span3">Lote</th>
+                            <th class="span3">Producto</th>
+                            <th class="span2">Referencia</th>                            
+                            <th class="span4">Medidas</th>
+                            <th class="span1">Acción</th>
+                            </thead>
+							<tbody>
+							
+							{%  for form_line in form_detail %}
+
+                                <!-- {%  crispy form_line %}  -->
+                                <tr class="form-row">
+                                	{{ form_line.id }}
+                                	<td>{{ form_line.lote }} 
+                                		<a
+											href="/trazabilidad/lotes/crear/"
+											class="add-another"
+											id="add_id_0" onclick="return showAddAnotherPopup(this);">
+											<img src="{{ STATIC_URL }}admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/>
+										</a>
+                                	</td>
+                                	<td>{{ form_line.producto }}</td>
+                                	<td>{{ form_line.referencia }}</td>
+                                	<td>
+                                		<div><label for="{{ form_line.cantidad.id_for_label }}">Unidades</label>{{ form_line.cantidad }}</div>
+                                		                            		
+                                		<div><label for="{{ form_line.peso.id_for_label }}">Peso unidad</label>{{ form_line.peso }}</div>
+                                		<div><label for="{{ form_line.pesobulto.id_for_label }}">Peso bulto</label>{{ form_line.pesobulto }}</div>
+                                		<div><label for="{{ form_line.volumen.id_for_label }}">Volumen</label>{{ form_line.volumen }}</div>
+                                	</td>
+                                	<td>{{ form_line.DELETE }}</td>
+                                </tr>
+                            {% endfor %}
+							</tbody>
+                            
+
+                        </table>
+
+                        <div class="form-actions">
+
+                            <input id="submit-id-update" class="btn btn-primary" type="submit" value="Guardar" name="Update">
+                            <input id="button-id-cancel" class="btn" type="button" value="Cancelar" name="cancel">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+        </form>
+        {% include "base/mensajes_error.html" %}
+        {% include "base/dialogo_mensajes.html" %}
+
+{%  endblock %}
+
+{% block footer %}
+    <script src="{{ STATIC_URL }}js/jquery.formset.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
+    <script type="text/javascript">
+    function showAddAnotherPopup(triggeringLink) {
+        var name = triggeringLink.id.replace(/^add_/, '');
+        name = id_to_windowname(name);
+        href = triggeringLink.href
+        if (href.indexOf('?') == -1) {
+            href += '?_popup=1';
+        } else {
+            href  += '&_popup=1';
+        }
+        //var win = window.open(href, name, 'height=500,width=900,resizable=yes,scrollbars=yes');
+        var win = window.open(href, name);
+        win.focus();
+        return false;
+    }
+        $(document).ready(function() {
+
+            $('#button-id-cancel').click(function () {
+                parent.history.back();
+            });
+            $('.form-row').formset({
+                prefix: '{{ form_detail.prefix }}',
+                added: function (row) {
+                    var widget = $(".autocomplete-light-widget", row);
+                    widget.yourlabsWidget('destroy');
+                    widget.find('input').yourlabsAutocomplete('destroy');
+                    widget.trigger('initialize');
+                }
+            });
+            $('[data-form=datepicker]').datepicker({format : 'dd/mm/yyyy',  language: 'es'  });
+            
+            $('body').on('change', '.autocomplete-light-widget select[name$=-lote]', function() {
+                var loteSelectElement = $(this);
+                var idproducto = loteSelectElement[0].id.replace('lote','producto')
+                var productoSelectElement = $('#' + $(this).attr('id').replace(loteSelectElement[0].id, idproducto));
+                var productoWidgetElement = productoSelectElement.parents('.autocomplete-light-widget');
+
+                // When the country select changes
+                value = $(this).val();
+
+                if (value) {
+                    // If value is contains something, add it to autocomplete.data
+                	productoWidgetElement.yourlabsWidget().autocomplete.data = {
+                        'lotes': value[0],
+                    };
+                } else {
+                    // If value is empty, empty autocomplete.data
+                	productoWidgetElement.yourlabsWidget().autocomplete.data = {}
+                }
+
+                // example debug statements, that does not replace using breakbpoints and a proper debugger but can hel
+                // console.log($(this), 'changed to', value);
+                // console.log(regionWidgetElement, 'data is', regionWidgetElement.yourlabsWidget().autocomplete.data)
+            })
+
+        });
+
+    </script>
+
+
+
+{%  endblock %}

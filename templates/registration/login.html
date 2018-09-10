@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Autentificar SIVA</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="stilearning">
+
+        <!-- google font -->
+        <link href="//fonts.googleapis.com/css?family=Aclonica:regular" rel="stylesheet" type="text/css" />
+        
+        <!-- styles -->
+        <link href="{{ STATIC_URL}}stilearn/css/bootstrap.css" rel="stylesheet">
+        <link href="{{ STATIC_URL}}stilearn/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="{{ STATIC_URL}}stilearn/css/stilearn.css" rel="stylesheet">
+        <link href="{{ STATIC_URL}}stilearn/css/stilearn-responsive.css" rel="stylesheet">
+        <link href="{{ STATIC_URL}}stilearn/css/stilearn-helper.css" rel="stylesheet">
+        <link href="{{ STATIC_URL}}stilearn/css/stilearn-icon.css" rel="stylesheet">
+        <link href="{{ STATIC_URL}}stilearn/css/font-awesome.css" rel="stylesheet">
+        <link href="{{ STATIC_URL}}stilearn/css/animate.css" rel="stylesheet">
+        <link href="{{ STATIC_URL}}stilearn/css/uniform.default.css" rel="stylesheet">
+        
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+          <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <!-- section header -->
+        <header class="header" data-spy="affix" data-offset-top="0">
+            <!--nav bar helper-->
+            <div class="navbar-helper">
+                <div class="row-fluid">
+                    <!--panel site-name-->
+                    <div class="span2">
+                        <div class="panel-sitename">
+                            <h2><a href="index.html"><span class="color-teal">SI</span>VA</a></h2>
+                        </div>
+                    </div>
+                    <!--/panel name-->
+                </div>
+            </div><!--/nav bar helper-->
+        </header>
+        
+        <!-- section content -->
+        <section class="section">
+            <div class="container">
+                <div class="signin-form row-fluid">
+                    <!--Sign In-->
+                    <div class="span6 offset3">
+                        <div class="box corner-all">
+                            <div class="box-header grd-teal color-white corner-top">
+                                <span>Acceso al Sistema Integral de Vigilancia Alimentaria:</span>
+                            </div>
+                            <div class="box-body bg-white">
+                                <form id="sign-in" method="post">{% csrf_token %}
+                                    <div class="control-group">
+                                        <label class="control-label">Nombre Usuario</label>
+                                        <div class="controls">
+                                            {{ form.username }}
+
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">Contraseña</label>
+                                        <div class="controls">
+                                            {{ form.password }}
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <input type="submit" class="btn btn-block btn-large btn-primary" value="Entrar" />
+
+                                    </div>
+                                    {% if next %}
+                                        <input  type="hidden" name="next" value="/" />
+                                    {% else %}
+                                        <input  type="hidden" name="next" value="/panelprincipal" />
+                                    {% endif %}
+
+                                </form>
+                            </div>
+                        </div>
+                    </div><!--/Sign In-->
+                    <!--Sign Up-->
+
+                </div><!-- /row -->
+            </div><!-- /container -->
+            
+            <!-- modal recover -->
+
+        </section>
+
+        <!-- javascript
+        ================================================== -->
+        <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+        <script src="{{ STATIC_URL}}stilearn/js/jquery.js"></script>
+        <script src="{{ STATIC_URL}}stilearn/js/bootstrap.js"></script>
+        <script src="{{ STATIC_URL}}stilearn/js/uniform/jquery.uniform.js"></script>
+        
+        <script src="{{ STATIC_URL}}stilearn/js/validate/jquery.metadata.js"></script>
+        <script src="{{ STATIC_URL}}stilearn/js/validate/jquery.validate.js"></script>
+        
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // try your js
+                
+                // uniform
+                $('[data-form=uniform]').uniform();
+                
+                // validate
+                $('#sign-in').validate();
+                $('#sign-up').validate();
+                $('#form-recover').validate();
+            })
+        </script>
+    </body>
+</html>

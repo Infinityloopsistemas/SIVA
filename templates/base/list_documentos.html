@@ -1,0 +1,46 @@
+{% extends "base/listas.html" %}
+{% load crispy_forms_tags %}
+{% load mis_filtros %}
+{% block listatitulo %}
+    <h4>{{ auxiliar.etiqueta }}</h4>
+    <!--  <button class="btn btn-mini btn-primary" type="button" onclick="document.location.href='{{ acciones.crear}}/{{ acciones.modelo }}/{{ acciones.id }}';return false;"> Añadir Nuevo {{ auxiliar.etiqueta }}</button> -->
+    {% if request.user|has_group:"veterinarios" or request.user|has_group:"administradores"  %}
+    <button class="btn btn-mini btn-primary" type="button" onclick="document.location.href='/appcc/{{ acciones.urlAux }}/documentos/{{ acciones.modelo }}/{{ acciones.id }}/crear';return false;"> Añadir Nuevo {{ auxiliar.etiqueta }}</button>
+    {% endif %}
+{% endblock %}
+{% block titulotabla %}
+    <tr>
+        {%  for obj in cabezera %}
+            <th>{{ obj }}</th>
+        {%  endfor %}
+    </tr>
+{%  endblock %}
+{% block cuerpotabla %}
+    {% if object_list %}
+        {% for object in object_list %}
+            <tr>
+
+                <td>
+                    <a href="{{ object.get_absolute_url }}">
+                        {{ object.denominacion }}
+                    </a>
+                </td>
+               <td>
+                 {% autoescape off %}
+                       {{ object.verDocumento }}
+                    {% endautoescape%}
+                </td>
+
+                <td>
+
+                    <button  class="btn btn-mini btn-danger" type="button" onclick="document.location.href='{{ acciones.eliminar }}/{{ object.id }}/';return false;"
+                    {% if request.user|has_group:'responsables' or request.user|has_group:'coordinadores'  %} disabled {% endif %}>Eliminar</button>
+                </td>
+            </tr>
+        {% endfor %}
+
+
+    {% else %}
+        <p>No Existen {{ auxiliar.etiqueta }} Creadas.</p>
+    {% endif %}
+{% endblock %}

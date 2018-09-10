@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subreport_cabecera_appcc" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b2e4d062-4fee-453d-b138-31fceb115f6d">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.jasperserver.reportUnit" value="/siva/appcc/registros/registro_diario_model_01"/>
+	<property name="ireport.jasperserver.url" value="http://176.58.121.31:8080/jasperserver/services/repository"/>
+	<parameter name="pappccid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     appcc_appcc.`id` AS appcc_appcc_id,
+     appcc_appcc.`fechaalta` AS appcc_appcc_fechaalta,
+     appcc_appcc.`fechabaja` AS appcc_appcc_fechabaja,
+     siva.maestros_generales('EMPRESAS',appcc_appcc.`empresa_id`) AS nombre_empresa,
+     appcc_appcc.`fechaedicion` AS appcc_appcc_fechaedicion,
+     appcc_appcc.`denominacion` AS appcc_appcc_denominacion,
+     appcc_appcc.`user_id` AS appcc_appcc_user_id,
+     appcc_appcc.`contenido` AS appcc_appcc_contenido
+FROM
+     `appcc_appcc` appcc_appcc
+where appcc_appcc.`id` =$P{pappccid}]]>
+	</queryString>
+	<field name="appcc_appcc_id" class="java.lang.Integer"/>
+	<field name="appcc_appcc_fechaalta" class="java.sql.Date"/>
+	<field name="appcc_appcc_fechabaja" class="java.sql.Date"/>
+	<field name="nombre_empresa" class="java.lang.String"/>
+	<field name="appcc_appcc_fechaedicion" class="java.sql.Date"/>
+	<field name="appcc_appcc_denominacion" class="java.lang.String"/>
+	<field name="appcc_appcc_user_id" class="java.lang.Integer"/>
+	<field name="appcc_appcc_contenido" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="76" splitType="Stretch">
+			<textField>
+				<reportElement uuid="0ffa85ab-4a66-4432-9ef9-f3712011de76" x="0" y="44" width="555" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_appcc_denominacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3e53dcd6-ebd4-4219-82a8-c2d2f2e825d6" x="0" y="0" width="391" height="32"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_empresa}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

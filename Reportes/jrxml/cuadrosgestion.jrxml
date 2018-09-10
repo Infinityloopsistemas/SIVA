@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cuadrosgestion" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="762" leftMargin="40" rightMargin="40" topMargin="20" bottomMargin="20" uuid="bfd0da00-af95-4c72-a089-9fe25f9848b1">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="457"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.jasperserver.reportUnit" value="/siva/limpieza/plancontrol_mode_01"/>
+	<property name="ireport.jasperserver.url" value="http://176.58.121.31:8080/jasperserver/services/repository"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<style name="BANDAS" mode="Opaque" forecolor="#000000" backcolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="PieChartDataset" uuid="5c03800d-15bf-431e-bdd9-650b570ba117"/>
+	<parameter name="pid" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
+     siva.maestros('PERSONAL',siva.appcc_cuadrosgestion.`ente_id`) AS txtpersonal,
+     siva.maestros('PELIGROS',siva.appcc_cuadrosgestion.`peligro_id`) AS txtpeligro,
+     siva.maestros('TIPOSFRECUENCIAS',siva.appcc_cuadrosgestion.`tpfrecreg_id`) AS txtfrecuencias,
+     siva.maestros('TIPOSMEDIDASACTUACION',siva.appcc_cuadrosgestion.`tpmedactc_id`) AS txtmedactcorrectiva,
+     siva.maestros('TIPOSMEDIDASACTUACION',siva.appcc_cuadrosgestion.`tpmedactp_id`) AS txtmedactpreventiva,
+     siva.maestros('TIPOSMEDIDASVIGILANCIA',siva.appcc_cuadrosgestion.`tpmedvig_id`) AS txtmedvig,
+     siva.maestros('TIPOSLIMITESCRITICOS',siva.appcc_cuadrosgestion.`tplimitcrit_id`) AS txtimitcritico,
+     siva.maestros('ETAPAS',siva.appcc_cuadrosgestion.`etapa_id`) AS txtetapa,
+     siva.appcc_appcc.`denominacion` AS appcc_appcc_denominacion,
+     siva.appcc_cuadrosgestion.`appcc_id` AS cuadrosgestion_appcc_id,
+     siva.appcc_cuadrosgestion.`orden` AS appcc_cuadrosgestion_orden,
+     siva.appcc_cuadrosgestion.`ptocritico` AS ptocritico,
+     siva.appcc_cuadrosgestion.`ptoctrlcrit` AS ptoctrlcrit,
+     siva.appcc_cuadrosgestion.`momento` AS appcc_cuadrosgestion_momento,
+     siva.appcc_cabregistros.`denominacion` AS egistros_denominacion,
+     siva.appcc_appcc.`fechaedicion` AS appcc_appcc_fechaedicion
+FROM
+     siva.`appcc_appcc` appcc_appcc INNER JOIN siva.`appcc_cuadrosgestion` appcc_cuadrosgestion ON appcc_appcc.`id` = appcc_cuadrosgestion.`appcc_id`
+     LEFT JOIN siva.`appcc_cabregistros` appcc_cabregistros ON appcc_cuadrosgestion.`registros_id` = appcc_cabregistros.`id`
+where appcc_cuadrosgestion.`appcc_id`=$P{pid}
+ORDER BY
+     appcc_cuadrosgestion.`orden` ASC]]>
+	</queryString>
+	<field name="txtpersonal" class="java.lang.String"/>
+	<field name="txtpeligro" class="java.lang.String"/>
+	<field name="txtfrecuencias" class="java.lang.String"/>
+	<field name="txtmedactcorrectiva" class="java.lang.String"/>
+	<field name="txtmedactpreventiva" class="java.lang.String"/>
+	<field name="txtmedvig" class="java.lang.String"/>
+	<field name="txtimitcritico" class="java.lang.String"/>
+	<field name="txtetapa" class="java.lang.String"/>
+	<field name="appcc_appcc_denominacion" class="java.lang.String"/>
+	<field name="cuadrosgestion_appcc_id" class="java.lang.Integer"/>
+	<field name="appcc_cuadrosgestion_orden" class="java.lang.String"/>
+	<field name="ptocritico" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ptoctrlcrit" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="appcc_cuadrosgestion_momento" class="java.lang.String"/>
+	<field name="egistros_denominacion" class="java.lang.String"/>
+	<field name="appcc_appcc_fechaedicion" class="java.sql.Date"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="95" splitType="Stretch">
+			<frame>
+				<reportElement uuid="e5b48661-b338-4a07-9eb7-d531ac04f43e" mode="Transparent" x="0" y="0" width="764" height="81" forecolor="#1D0D0D" backcolor="#FFFFFF"/>
+				<textField>
+					<reportElement uuid="259b8eb6-361f-437a-850f-2955b070b3a0" x="0" y="1" width="630" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{appcc_appcc_denominacion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="61556647-af0e-4838-90e7-49d778210bc9" x="630" y="0" width="54" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Código]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="0eeee398-704c-42b5-9b86-365a871c9d0c" x="630" y="20" width="54" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Versión]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="cdf0e6b7-3fcb-4599-94cc-d88b8b7817ab" x="630" y="40" width="54" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Fecha]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d062952a-31ec-44c7-a138-243e44ec3519" x="630" y="60" width="54" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Tipo]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="b128f35b-aeda-4da4-aa10-0ae1669dfbe4" x="684" y="0" width="78" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["PLDI"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="8a8b15bc-24b9-4bbc-8c51-171c87d740b7" x="684" y="20" width="78" height="19"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["5"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="2c8f188c-358d-477b-8fab-cf5272dac5e0" x="684" y="60" width="78" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["Manual"]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="193cb855-bd29-47ad-8334-7d3e66d2c7f5" x="630" y="20" width="132" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="28d64993-74e4-4190-bc29-4066e31a6e01" x="630" y="39" width="132" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="f16a9261-fde0-4b97-aad9-8cb9706dba78" x="630" y="57" width="132" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="e7bf7e7e-609e-4a53-8320-96b90e469115" x="684" y="0" width="1" height="79"/>
+				</line>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="a9a4bc8d-d442-4c13-af6e-d3ae8f026cb8" x="685" y="40" width="77" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{appcc_appcc_fechaedicion}]]></textFieldExpression>
+				</textField>
+				<rectangle radius="10">
+					<reportElement uuid="ce84400b-cfec-40e1-9009-ba6e38e3cd36" mode="Transparent" x="630" y="1" width="132" height="78"/>
+				</rectangle>
+			</frame>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="12" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="81e154ec-e429-4fe4-8ae1-305cb6d13241" mode="Opaque" x="0" y="0" width="760" height="12" backcolor="#C0C0C0"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="3aa8e162-a56a-41b7-928c-ee0ed6efdbd7" x="45" y="0" width="68" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Etapa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f1d61939-9682-4c04-8c9d-f224669a8946" x="0" y="0" width="45" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Orden]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="75b6e3a4-42a9-4b00-9b30-d92f68f1c272" x="113" y="0" width="86" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Peligro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9e587fa5-2d90-4ecb-a283-abb54a7a4305" x="199" y="0" width="90" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[M.Preventivas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8b038533-5ea6-4f73-95af-3fb82a934731" x="289" y="0" width="15" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4d22d986-f50a-48b7-b554-a8c4590b63d3" x="304" y="0" width="24" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PCC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ccb97e15-1a07-4e78-a1f0-08fda13f4fd2" x="328" y="0" width="50" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[L.Critico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b69da9c-81ed-47f6-963d-349e92cabefa" x="378" y="0" width="63" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[P. Vigilancia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3606fc78-4245-4422-8697-749ae87b7df1" x="441" y="0" width="51" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuando]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="54ccefd6-45a6-4076-a253-413cb7b1a760" x="492" y="0" width="80" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quien]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0c289e8a-c1ac-43bb-bcb8-842a1b9d13df" x="572" y="0" width="79" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Act. Correctora]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="785396ec-fd1a-42e6-96d2-8bdcaf3adf31" x="651" y="0" width="70" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Registro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ef3274bf-0bed-43a4-bbf9-aef50fcd12eb" x="720" y="0" width="41" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Frec.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="b99af663-2d35-4859-927f-a2faf0b4159e" style="BANDAS" mode="Opaque" x="0" y="0" width="760" height="39"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="a222fe81-efdd-44f2-8bec-a739c35ea428" x="47" y="0" width="66" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txtetapa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="068457bb-e153-451b-ac02-42780073fe32" x="1" y="0" width="45" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_cuadrosgestion_orden}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ac4ed6a4-d00c-49a2-b351-933853010647" x="113" y="0" width="86" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txtpeligro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cd9e078f-1a19-4f1a-bc93-f77f1d2a4daa" x="199" y="0" width="90" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txtmedactpreventiva}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="37bad04d-277d-4cae-a562-432101aa18da" x="289" y="0" width="15" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{ptocritico}==true?'S':'N')]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="74bfaeec-042d-42f3-b985-5742ac9b4029" x="304" y="0" width="24" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{ptoctrlcrit}==true?'S':'N')]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fff83757-cdc3-405a-a92a-048ae4f5f251" x="328" y="0" width="50" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txtimitcritico}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5e63e14e-d8f3-433e-9233-b51e6b9c5ac4" x="378" y="0" width="63" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txtmedvig}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="73cb564c-9bcb-405c-b195-20cdaef9fef0" x="441" y="0" width="51" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_cuadrosgestion_momento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="58786dee-e00c-4313-bb1b-6155a6de7cfe" x="492" y="0" width="80" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txtpersonal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e1c95fa2-8e76-4f5b-b827-ba77160f23c3" x="572" y="0" width="79" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txtmedactcorrectiva}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="78455345-383e-4833-99a4-574c015d4934" x="651" y="0" width="70" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{egistros_denominacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="56bd0f20-0bba-4e40-9a99-8a9808ba9c13" x="720" y="0" width="41" height="40"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txtfrecuencias}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="4" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<frame>
+				<reportElement uuid="8432b842-4a82-4dd5-9c87-82e77f787396" mode="Opaque" x="2" y="0" width="760" height="13" forecolor="#D0B48E" backcolor="#285CF2"/>
+				<textField evaluationTime="Report">
+					<reportElement uuid="80352038-bad3-443b-bfce-bc62e4a10583" style="Column header" x="719" y="0" width="40" height="13" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="e5ae54ee-4e3d-4150-9311-8c910c64eac7" style="Column header" x="639" y="0" width="80" height="13" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement uuid="8b04f8d9-e926-4123-a51b-916e6a3ef6b0" style="Column header" x="2" y="0" width="197" height="13" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

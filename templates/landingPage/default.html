@@ -1,0 +1,357 @@
+{% load compress %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SIVA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="GivaSL">
+
+<meta http-equiv="x-pjax-version" content="v173">
+
+<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+<!-- fav and touch icons -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144"
+	href="ico/favico-144-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114"
+	href="ico/favico-114-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72"
+	href="ico/favico-72-precomposed.png">
+<link rel="apple-touch-icon-precomposed"
+	href="ico/favico-57-precomposed.png">
+<link rel="shortcut icon" href="{{ STATIC_URL }}images/landing-page/ojo-cert-web.png">
+<link rel="shortcut icon" href="ico/favico.ico">
+
+<!-- build:css styles/vendor.css -->
+<!-- bower:css -->
+{% compress css %}
+<link rel="stylesheet"
+	href="{{ STATIC_URL }}stil/app/bower_components/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet"
+	href="{{ STATIC_URL }}stil/app/bower_components/font-awesome/css/font-awesome.css">
+<link rel="stylesheet"
+	href="{{ STATIC_URL }}stil/app/bower_components/animate.css/animate.css">
+<link rel="stylesheet"
+	href="{{ STATIC_URL }}stil/app/bower_components/Hover/css/hover.css">
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:css(.tmp) styles/main.css -->
+<link id="style-components"
+	href="{{ STATIC_URL }}stil/app/styles/loaders.css" rel="stylesheet">
+<link id="style-components"
+	href="{{ STATIC_URL }}stil/app/styles/bootstrap-theme.css"
+	rel="stylesheet">
+<link id="style-components"
+	href="{{ STATIC_URL }}stil/app/styles/dependencies.css"
+	rel="stylesheet">
+<link id="style-base"
+	href="{{ STATIC_URL }}stil/app/styles/stilearn.css" rel="stylesheet">
+<link id="style-responsive"
+	href="{{ STATIC_URL }}stil/app/styles/stilearn-responsive.css"
+	rel="stylesheet">
+<link id="style-helper"
+	href="{{ STATIC_URL }}stil/app/styles/helper.css" rel="stylesheet">
+<link id="style-sample"
+	href="{{ STATIC_URL }}stil/app/styles/pages-style.css" rel="stylesheet">
+<!-- endbuild -->
+
+
+<link rel="stylesheet"
+	href="{{ STATIC_URL }}css/corporativo.css">
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+          <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
+        <![endif]-->
+{% endcompress %}
+
+<script src="//maps.googleapis.com/maps/api/js"></script>
+{% compress js %}
+<script>
+var map;
+
+function initialize() {
+	var lat = 27.842978;
+	var lng = -15.443853;
+	var point = new google.maps.LatLng(lat,lng);
+	var mapOptions ={
+			zoom: 17,
+	        panControl:true,
+	        zoomControl:true,
+	        zoomControlOptions: {
+	            style:google.maps.ZoomControlStyle.LARGE
+	          },
+	        mapTypeControl:true,
+	        scaleControl:true,
+	        streetViewControl:true,
+	        overviewMapControl:true,
+	        rotateControl:true, 
+	        center: point,
+	        mapTypeId: google.maps.MapTypeId.ROADMAP	
+	}
+    map = new google.maps.Map(document.getElementById('map'),mapOptions);
+    
+    
+    var marker = new google.maps.Marker({
+    	position: point,
+    	animation:google.maps.Animation.BOUNCE
+    	//map: map,
+	});
+    marker.setMap(map);
+    var infowindow = new google.maps.InfoWindow({
+    	  content:"Giva SL"
+    	  });
+
+    google.maps.event.addListener(marker, 'click', function() {
+    	  infowindow.open(map,marker);
+    	  });
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+{% endcompress %}
+<style>
+body {
+	font-family: sans-serif
+}
+
+#map {
+	width: 500px;
+	height: 400px
+}
+@-webkit-keyframes blinker {
+  from {background:red;}
+  to {background:yellow;}
+}
+.blink{
+    text-decoration: blink;
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 0.6s;
+    -webkit-animation-iteration-count:infinite;
+    -webkit-animation-timing-function:ease-in-out;
+    -webkit-animation-direction: alternate;
+}
+</style>
+</head>
+
+<body data-spy="scroll" data-target=".navbar" class="animated fadeIn">
+
+	<div class="frontend-page">
+		<header id="home"
+			style="background: url({{ STATIC_URL }}images/landing-page/green.jpg) no-repeat center; background-size: 100%; position: relative; margin: 0px; padding: 0px; width: 100%; height: 675px;">
+			<nav class="navbar navbar-default no-border animated fadeInDown"
+				role="navigation" data-spy="affix" data-offset-top="674"
+				style="background-color:white;">
+				<div class="container">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse"
+							data-target="#comingsoon-navbar">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+
+						<a class="navbar-brand scroll" href="#home"> <img
+							src="{{ STATIC_URL }}images/landing-page/logo-giva.png"
+							alt="GivaSL">
+						</a>
+
+
+					</div>
+					<!--/navbar-header-->
+
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse" id="comingsoon-navbar">
+						<ul class="nav navbar-nav navbar-right">
+							<li><a class="scroll" href="#home">Home</a></li>
+							<li><a class="scroll" href="#about">Localización</a></li>
+							<li><a class="scroll" href="#queEs">¿Qué es SIVA?</a></li>
+							<li class="blink"><a href="/sign_in/"><strong>Iniciar</strong></a></li>
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+				</div>
+				<!--/container-->
+			</nav>
+			<!--/navbar-->
+
+			<div class="header-caption">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-7">
+							<h1 class="animated fadeInDown animated-delay">
+								<span class="text-lg text-uppercase">
+								SIVA</span>
+							</h1>
+
+							<p class="lead text-uppercase animated fadeInUp animated-delay-2">
+								<span class="text-lg">Sistema Integral de Vigilancia Alimentaria</span>
+							</p>
+
+							<p class="animated flipInX animated-delay-3">
+								<a target="_blank"
+									href="#about"
+									class="btn btn-lg btn-rounded btn-transparent margin-bottom">Saber más</a> <a href="http://www.givasl.com"
+									class="btn btn-lg btn-rounded btn-transparent margin-bottom margin-left">Ir al sitio</a>
+							</p>
+						</div>
+						<!--/-cols-->
+					</div>
+					<!--/-row-->
+				</div>
+				<!--/-container-->
+			</div>
+			<!--/header-caption-->
+		</header>
+		<!--/header-->
+
+		<section id="about" class="section-content">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="img-showcase wow fadeInUp" data-wow-delay="0.5s">
+							<div id="map"></div>
+						</div>
+					</div>
+					<!--/-cols-->
+
+					<div class="col-md-5">
+						<div class="caption-showcase wow fadeInDown" data-wow-delay="0.5s">
+							<h2>Giva SL</h2>
+							<p>Nuestra empresa está constituida por un equipo multidisciplinar de profesionales, con dilatada experiencia en el campo de la seguridad alimentaria. </p>
+
+							<p>Actualmente nuestra plantilla está constituida por las siguientes especialidades: Ingeniería, Física, Veterinaria, Farmacia, Marketing, Administración y Dirección de Empresas e Informática.</p>
+						</div>
+					</div>
+					<!--/-cols-->
+
+				</div>
+				<!--/-row-->
+			</div>
+			<!--/-container-->
+
+		</section>
+		<!--/section-->
+
+
+
+		<svg class="bg-cloud" xmlns="http://www.w3.org/2000/svg" version="1.1"
+			viewbox="0 0 100 100" preserveaspectratio="none">
+        </svg>
+
+		<!-- <svg class="bg-giva" xmlns="http://www.w3.org/2000/svg"
+			version="1.1" viewbox="0 0 100 100" preserveaspectratio="none">
+                <path class="no-stroke" fill="#333C5A"
+				d="M50 100 C49 80 47 0 40 0 L47 0 Z" />
+                <path class="no-stroke" fill="#333C5A"
+				d="M50 100 C51 80 53 0 60 0 L53 0 Z" />
+                <path class="bg-inverse no-stroke"
+				d="M47 0 L50 100 L53 0 Z" />
+            </svg>  -->
+
+		<section id="queEs" class="section-content bg-giva">
+			<div class="container">
+				<h1 class="text-center">
+					<span class="text-lead wow fadeInUp">SIVA, Sistema Integral de Vigilancia Alimentaria, es un software de gestión integral del appcc y la seguridad alimentaria 
+					de la empresa alimentaria del siglo XXI, siendo el elemento diferenciador ante la administración pública y como herramienta eficaz de la gestión de su política de seguridad alimentaria</span>
+				</h1>
+				<br>
+				<div class="text-center margin-top">
+					<div class="float-shadow wow fadeInLeft">
+						<a target="_blank"
+							href="http://www.givasl.com"
+							class="btn btn-lg btn-rounded btn-transparent margin-right" style="border:none;">
+							<img
+							src="{{ STATIC_URL }}images/landing-page/ojo-cert-web.png"
+							alt="GivaSL" width=175 height="200">
+						</a>
+					</div>
+				</div>
+			</div>
+			<!--/-container-->
+		</section>
+		<!--/section-->
+
+		<footer class="footer">
+			<div class="container">
+				<p class="text-footer wow fadeInDown">
+					<img class="lazy" height="40px"
+						data-original="{{ STATIC_URL }}images/landing-page/logo-giva.png" alt="Giva SL">
+					Copyright © 2015 Grupo Integral de Vigilancia Alimentaria S.L.
+				</p>
+			</div>
+			<!--/-container-->
+		</footer>
+		<!--/footer-->
+	</div>
+	<!--/frontend-page-->
+
+
+	{% compress js %}
+	<!-- build:js scripts/vendor-main.js -->
+	<!-- bower:js -->
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jquery/jquery.min.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jqueryui/ui/jquery-ui.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jqueryui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<!-- endbuild -->
+
+	<!-- build:js scripts/vendor-usefull.js -->
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/pace/pace.min.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jquery-pjax/jquery.pjax.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/skycons/skycons.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jquery.lazyload/jquery.lazyload.min.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/WOW/dist/wow.min.js"></script>
+	<!-- endbuild -->
+
+	<!-- build:js scripts/vendor-form.js -->
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jquery.validation/jquery.validate.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jquery.validation/additional-methods.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/autogrow-textarea/jquery.autogrowtextarea.min.js"></script>
+
+
+
+	<!-- build:js scripts/excanvas.js -->
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="bower_components/flot/excanvas.min.js"></script><![endif]-->
+	<!-- endbuild -->
+
+
+	<!-- build:js scripts/vendor-maps.js -->
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jqvmap/jqvmap/jquery.vmap.min.js"></script>
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/jqvmap/jqvmap/maps/continents/jquery.vmap.europe.js"></script>
+
+	<!-- endbuild -->
+
+	<!-- build:js scripts/vendor-util.js -->
+	<script
+		src="{{ STATIC_URL }}stil/app/bower_components/holderjs/holder.js"></script>
+	<!-- endbower -->
+	<!-- endbuild -->
+
+	<script class="re-execute"
+		src="{{ STATIC_URL }}stil/app/scripts/bootstrap-setup.js"></script>
+	<script class="re-execute"
+		src="{{ STATIC_URL }}stil/app/scripts/jqueryui-setup.js"></script>
+	<script class="re-execute"
+		src="{{ STATIC_URL }}stil/app/scripts/dependencies-setup.js"></script>
+
+	<!-- endbuild -->
+	{% endcompress %}
+</body>
+</html>

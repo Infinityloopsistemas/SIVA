@@ -1,0 +1,346 @@
+{% extends "base/base.html" %}
+{% load dajaxice_templatetags %}
+{% load compress %}
+{% block extrahead %}
+{% dajaxice_js_import %}
+
+{% endblock %}
+{% block body %}
+    <div class="box corner-all">
+        <div class="box-header grd-white color-silver-dark corner-top">
+            <div class="header-control">
+                <a data-box="collapse"><i class="icofont-caret-up"></i></a>
+            </div>
+            <span>Planificación</span>
+        </div>
+        <div class="box-body">
+            <div id="schedule"></div>
+        </div>
+    </div>
+
+    {% include "base/registros.html" %}
+    {% include "base/mensajes_error.html" %}
+    {% include "base/mensaje_validacion_registros.html" %}
+    {% include "reportes/impreg_modal.html" %}
+    {% include "reportes/grafreg_modal.html" %}
+
+{% endblock %}
+ {% block print_tareas %}
+        <div class="divider-content"><span></span></div>
+        <button id="butimpresion" class="btn btn-block btn-mini btn-success" onclick="window.open('/appcc/imprimir/listatareas/{{ nombre_empresa.id }}','Lista Tareas Día'); return false;">Imprimir Tareas Hoy</button>
+  {% endblock %}
+{% block imp_reg %}
+        <div class="divider-content"><span></span></div>
+        <button id="butregimpresion" class="btn btn-block btn-mini btn-warning">Impresion Registros</button>
+  {% endblock %}
+{%  block graf_reg %}
+         <div class="divider-content"><span></span></div>
+        <button id="butreggraficareg" class="btn btn-block btn-mini btn-danger">Graficas Registros</button>
+{% endblock %}
+
+{%  block sensor_reg %}
+         <div class="divider-content"><span></span></div>
+        <button id="butreggraficasensor" class="btn btn-block btn-mini btn-warningr">Sensores Registros</button>
+{% endblock %}
+
+{% block footer %}
+	{% compress js %}
+    <script src="{{ STATIC_URL }}stilearn/js/calendar/fullcalendar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}dajax/jquery.dajax.core.js"></script>
+{#    <script type="text/javascript" src="{{ STATIC_URL }}js/panel_principal.js"></script>#}
+     <script src="{{ STATIC_URL }}stilearn/js/knob/jquery.knob.js"></script>
+     <script src="{{ STATIC_URL }}stilearn/js/peity/jquery.peity.js"></script>
+     <script src="{{ STATIC_URL }}stilearn/js/flot/jquery.flot.js"></script>
+     <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot/excanvas.js"></script><![endif]-->
+     <script src="{{ STATIC_URL }}stilearn/js/flot/jquery.flot.categories.js"></script>
+     <script src="{{ STATIC_URL }}stilearn/js/flot/jquery.flot.symbol.js"></script>
+     <script src="{{ STATIC_URL }}stilearn/js/flot/jquery.flot.crosshair.js"></script>
+     <script src="{{ STATIC_URL }}stilearn/js/flot/jquery.flot.stack.js"></script>
+     <script src="{{ STATIC_URL }}stilearn/js/flot/jquery.flot.pie.js"></script>
+     <script src="{{ STATIC_URL }}stilearn/js/flot/jquery.flot.time.js"></script>
+     <script src="{{ STATIC_URL }}stilearn/js/flot/jquery.flot.resize.js"></script>
+     
+    <script type="text/javascript">
+
+        var opts = {
+                lines: 13, // The number of lines to draw
+                length: 20, // The length of each line
+                width: 10, // The line thickness
+                radius: 30, // The radius of the inner circle
+                corners: 0.7, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: '#000', // #rgb or #rrggbb
+                speed: 1.2, // Rounds per second
+                trail: 60, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: 'auto', // Top position relative to parent in px
+                left: 'auto' // Left position relative to parent in px
+            };
+        var target  = document.getElementById("schedule")
+        var spinner;
+        var oevent;
+        var hasOwnProperty = Object.prototype.hasOwnProperty;
+        function is_empty(obj) {
+                if (obj == null) return true;
+                if (obj.length && obj.length > 0)    return false;
+                if (obj.length === 0)  return true;
+
+                for (var key in obj) {
+                     if (hasOwnProperty.call(obj, key))    return false;
+                    }
+
+                return true;
+             }
+
+        function EventosActualiza(data)
+            {
+
+                if ( !is_empty(data))
+                {
+                    oevent.end          = data[0].end;
+                    oevent.title        = data[0].title;
+                    oevent.start        = data[0].start;
+                    oevent.color        = data[0].color;
+                    oevent.textcolor    = data[0].textcolor;
+                    oevent.data.pk      = data[0].data.pk;
+                    oevent.data.accion  = data[0].data.accion;
+                    oevent.data.detreg  = data[0].data.detreg;
+                    $('#schedule').fullCalendar('updateEvent',oevent)
+                }
+             }
+
+        function Arbol(data)
+        {
+            $('#arbol').tree({
+                    data: data,
+                    autoEscape: false
+                });
+
+
+        }
+
+      var ajax;
+    // then fetch the data with jQuery
+     function onDataReceived(series) {
+
+        // let's add it to our current data
+        if (!alreadyFetched[series.label]) {
+            $.each(series, function (i, v) {
+                alreadyFetched[series.label] = true;
+                data_ajax.push(series[i]);
+            });
+        }
+
+        // and plot all we got
+        $.plot(ajax, data_ajax,options_ajax);
+    }
+
+    $(document).ready(function() {
+
+
+
+          spineer = new Spinner(opts).spin(target);
+
+         $("#butregimpresion").click(function() {
+                  Dajaxice.appcc.JsonImpRegPanel(Arbol);
+                  $('#impregModal').modal('toggle').css({'width': '500px','margin-left': function () {return -($(this).width() / 1.5);}})
+
+          });
+
+          $("#btnmostrar").click(function() {
+               ajax = $("#grafica"),
+                    data_ajax = [],
+                    alreadyFetched = {},
+                    options_ajax = {
+                    series: {
+                        lines: {
+                        show: true
+                    },
+                 points: {
+                    show: true
+                 },
+                 hoverable: true
+                },
+                xaxis: {
+                mode: "time", timeformat: "%d-%m-%y", minTickSize: [1, "day"]
+                },
+                grid: {
+                backgroundColor: '#FFFFFF', // you can use gradiend like this { colors: [ "#FFFFFF", "#F1F1F1" ] }
+                borderWidth: 1,
+                borderColor: '#D7D7D7',
+                hoverable: true,
+                clickable: true
+                }
+
+                };
+               $.plot(ajax, data_ajax,options_ajax);
+              var idcab = $('#id_selcabreg').val();
+              Dajaxice.appcc.graficaregistros(onDataReceived,{'idcab':idcab });
+              return false;
+          });
+
+          $("#closegrafico").click(function()
+                {
+
+                }
+
+          )
+          $("#butreggraficareg").click(function() {
+                  Dajaxice.appcc.graficaentrada(Dajax.process)
+          });
+
+           $("#butreggraficasensor").click(function() {
+                   window.open("/grafsensores/");
+          });
+
+         $("#myModal").on('shown', function() {
+                 $(this).find("[autofocus]:first").focus();
+          });
+
+         $('#myModal').keypress(function(event)
+          {
+                if (event.keyCode==13)
+                {
+
+                    $('#id_guardar').click();
+                }
+          });
+
+           $('#id_guardar').click(function(){
+
+               Dajaxice.appcc.registrosRapidosGuardar(Dajax.process,{'form': $('#form_registro').serialize(true), 'pk':$('#id_registros-id').val().toString(), 'detregid': $('#id_registros-detreg_id').val().toString(), 'incidencia': 'N' });
+             }
+
+           )
+
+           $('#id_incidencia').click(function(){
+
+                Dajaxice.appcc.registrosRapidosGuardar(Dajax.process,{'form': $('#form_registro').serialize(true), 'pk':$('#id_registros-id').val().toString(), 'detregid': $('#id_registros-detreg_id').val().toString(), 'incidencia': 'S' });
+           });
+
+            $('[data-form=datepicker]').datepicker({format : 'dd/mm/yyyy',  language: 'es'  });
+
+{#            $('#mensajesregistros').on('hidden', function () {#}
+{#                Dajaxice.appcc.eventos(EventosActualiza);#}
+{#            } )#}
+{##}
+{#            $('#myModal').on('hidden', function () {#}
+{#                Dajaxice.appcc.eventos(EventosActualiza); #}
+{#            } )#}
+
+            // Schedule Calendar
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+
+            var Es_es = {
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+                monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                dayNames: ['Domingo','Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sab' ],
+                buttonText: {
+                    prev: '&nbsp;&#9668;&nbsp;',
+                    next: '&nbsp;&#9658;&nbsp;',
+                    prevYear: '&nbsp;&lt;&lt;&nbsp;',
+                    nextYear: '&nbsp;&gt;&gt;&nbsp;',
+                    today: 'hoy',
+                    month: 'mes',
+                    week: 'semana',
+                    day: 'dia'
+                },
+                titleFormat: {
+                    month: 'MMMM yyyy',
+                    week: "d [ yyyy]{ '&#8212;'[ MMM] d MMM yyyy}",
+                    day: 'dddd, d MMM, yyyy'
+                },
+                columnFormat: {
+                    month: 'ddd',
+                    week: 'ddd d/M',
+                    day: 'dddd d/M'
+                },
+                allDayText: 'día todo',
+                axisFormat: 'H:mm',
+                timeFormat: {
+                    '': 'H(:mm)',
+                    agenda: 'H:mm{ - H:mm}'
+                }
+        }
+
+            $.fullCalendar.setDefaults(Es_es)
+
+
+
+            function Eventos(data)
+            {
+
+             spineer.stop();
+
+             var calendar = $('#schedule').fullCalendar({
+
+              defaultView: 'basicDay',
+
+              eventClick: function(event) {
+
+                   if (event.data.accion.indexOf('E') ==-1)
+                   {
+                       oevent =event;
+                       pk = event.data.pk;
+                       sfecha = event.data.fecha;
+                       Dajaxice.appcc.registrosRapidosNuevo(Dajax.process,{'pk': pk, 'sfecha': sfecha});
+                       return false;
+                   } //A editar
+                   else
+                   {
+                       oevent =event;
+                       pk     = event.data.pk;
+                       detreg = event.data.detreg
+                       Dajaxice.appcc.registrosRapidosEditar(Dajax.process,{'pk': pk, 'detregid': detreg });
+                       return false;
+                   }
+
+
+                        $(this).css('border-color', 'red');
+
+                    },
+
+{#               eventMouseover: function(event){#}
+{#                   if (event.data.accion.indexOf('E')!=-1)#}
+{#                   {#}
+{#                        $(this).balloon({ minLifetime: 0 , contents:"Completado" })#}
+{#                   }else#}
+{#                   {#}
+{#                       $(this).balloon({ minLifetime: 0 , contents:"Pendiente" })#}
+{#                   }#}
+{#               },#}
+
+
+
+                header: {
+                    left: 'title',
+                    center: '',
+                    right: 'prev,next today,month,basicWeek,basicDay'
+                },
+
+                events: data
+            });
+
+            }
+
+
+            Dajaxice.appcc.eventos(Eventos);
+
+
+        });
+
+
+    </script>
+    
+    {% endcompress %}
+
+
+{% endblock %}

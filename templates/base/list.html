@@ -1,0 +1,59 @@
+{% extends "base/listas.html" %}
+{% load crispy_forms_tags %}
+{% load mis_filtros %}
+{% block listatitulo %}
+
+
+            <h4>{{ auxiliar.etiqueta }}</h4>
+	{% if request.user|has_group:"veterinarios" or request.user|has_group:"administradores"  %}
+    <button class="btn btn-mini btn-primary" type="button" onclick="document.location.href='{{ acciones.crear}}';return false;"> Añadir Nuevo {{ auxiliar.etiqueta }}</button>
+	{% endif %}
+{% endblock %}
+
+
+
+{% block titulotabla %}
+    <tr>
+        {%  for obj in cabezera %}
+            <th>{{ obj }}</th>
+        {%  endfor %}
+    </tr>
+{%  endblock %}
+{% block cuerpotabla %}
+    {% if object_list %}
+        {% for object in object_list %}
+            <tr>
+
+                <td>
+                    <a href="{{ object.get_absolute_url }}">
+                        {{ object.denominacion }}
+                    </a>
+                </td>
+                {% if object.urlDocumentos != None %}
+                <td>
+                    <button  class="btn btn-mini" type="button" onclick="document.location.href='{{ object.urlDocumentos }}';return false;">Documentos</button>
+                </td>
+                {% endif %}
+                {% if object.urlImpresion != None %}
+                    <td>
+                        <button  class="btn btn-mini" type="button" onclick="document.location.href='{{ object.urlImpresion }}';return false;">Imprimir</button>
+                    </td>
+                {% endif %}
+                <td>
+                
+                    {% if request.user|has_group:"responsables" or request.user|has_group:"coordinadores" %}
+                    	<button  class="btn btn-mini btn-danger" type="button" disabled>Eliminar</button>
+                    {% else %}
+                    	<button  class="btn btn-mini btn-danger" type="button" onclick="document.location.href='{{ acciones.eliminar }}/{{ object.id }}/';return false;">Eliminar</button>
+                    {% endif %}
+                    
+                </td>
+            </tr>
+        {% endfor %}
+
+
+    {% else %}
+        <p>No Existen {{ auxiliar.etiqueta }} Creadas.</p>
+    {% endif %}
+{% endblock %}
+

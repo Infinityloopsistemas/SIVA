@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="certificado_cursos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5372ffb7-431c-47df-9f17-51ee1b3b3dc7">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="866"/>
+	<property name="ireport.jasperserver.reportUnit" value="/siva/appcc/planes/manualautocontrol/cerformacion_model_01"/>
+	<property name="ireport.jasperserver.url" value="http://176.58.121.31:8080/jasperserver/services/repository"/>
+	<parameter name="pid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="NOMBREEMPRESA" class="java.lang.String">
+		<defaultValueExpression><![CDATA["ASESORÍA DE EMPRESAS DE ALIMENTACION"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT appcc_appcc.denominacion denominappcc,
+       maestros_terceros.denominacion denominaformador,
+       maestros_terceros.cif,
+       maestros_terceros.direccion1,
+       maestros_terceros.direccion2,
+       siva.maestros_generales('CODIGOSPOSTALES',maestros_terceros.codpostal_id)  as codpostales,
+       siva.maestros_generales('PROVINCIAS', maestros_terceros.provincia_id) as provincias,
+       siva.maestros_generales('MUNICIPIOS',maestros_terceros.municipio_id) as municipios,
+       maestros_personal.apellidos,
+       maestros_personal.nombres,
+       maestros_personal.dni,
+       maestros_personal.sexo,
+       maestros_tiposcursos.denominacion as denominacurso,
+       maestros_tiposcursos.contenido contenidocurso,
+       maestros_tiposlegislacion.contenido contenidolegisla,
+       siva.maestros('TIPOSFRECUENCIAS',appcc_relacionesentes.frecuencia_id) as frecuencia
+  FROM    (   (   (   (   (   siva.appcc_relacionesentes appcc_relacionesentes
+                           INNER JOIN
+                              siva.maestros_tiposcursos maestros_tiposcursos
+                           ON (appcc_relacionesentes.tiposcursos_id =
+                                  maestros_tiposcursos.id))
+                       INNER JOIN
+                          siva.appcc_manualautocontrol appcc_manualautocontrol
+                       ON (appcc_relacionesentes.manautctrl_id =
+                              appcc_manualautocontrol.id))
+                   INNER JOIN
+                      siva.appcc_appcc appcc_appcc
+                   ON (appcc_manualautocontrol.appcc_id = appcc_appcc.id))
+               INNER JOIN
+                  siva.maestros_personal maestros_personal
+               ON (appcc_relacionesentes.personal_id = maestros_personal.id))
+           INNER JOIN
+              siva.maestros_terceros maestros_terceros
+           ON (maestros_terceros.id = appcc_relacionesentes.tercero_id))
+       INNER JOIN
+          siva.maestros_tiposlegislacion maestros_tiposlegislacion
+       ON (maestros_tiposcursos.legislacion_id = maestros_tiposlegislacion.id)
+where appcc_relacionesentes.id = $P{pid}]]>
+	</queryString>
+	<field name="denominappcc" class="java.lang.String"/>
+	<field name="denominaformador" class="java.lang.String"/>
+	<field name="cif" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="direccion1" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="direccion2" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="codpostales" class="java.lang.String"/>
+	<field name="provincias" class="java.lang.String"/>
+	<field name="municipios" class="java.lang.String"/>
+	<field name="apellidos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dni" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sexo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="denominacurso" class="java.lang.String"/>
+	<field name="contenidocurso" class="java.lang.String"/>
+	<field name="contenidolegisla" class="java.lang.String"/>
+	<field name="frecuencia" class="java.lang.String"/>
+	<variable name="DonDna" class="java.lang.String">
+		<variableExpression><![CDATA[($F{sexo}=="M"?"D.":"Dña")]]></variableExpression>
+	</variable>
+	<background>
+		<band height="802" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement uuid="c4ce2e09-a3c1-44ad-be0c-3e740c33704f" x="41" y="16" width="512" height="41" forecolor="#FFFFFF" backcolor="#434F77"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="694f684d-319d-47d4-8973-a796262741a1" x="-2" y="760" width="555" height="40"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Vecindario – Avda. Canarias 349-B – Santa Lucía de Tirajana – C.P. 35110
+Móvil: 680 71 71 74 - Tfn.: 928 56 48 78 – Fax: 928 79 22 02
+E-mail: josealzn@gmail.com]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="ef9ff62b-a853-450d-8177-d3de85ed9077" x="1" y="0" width="40" height="760" forecolor="#FFFFFF" backcolor="#96C58E"/>
+			</rectangle>
+			<image>
+				<reportElement uuid="69c32ee3-8be2-4f66-9ace-8aa9726948d8" x="-20" y="38" width="163" height="92"/>
+				<imageExpression><![CDATA["repo:logocertificado.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="b463f3e7-3560-4356-9a44-73f7a97a2bbd" x="143" y="16" width="410" height="41" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASESORÍA DE EMPRESAS DE ALIMENTACION-AEA]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="84988d5c-8a15-46df-ae38-b6f2e3b449cc" x="173" y="641" width="244" height="119"/>
+				<imageExpression><![CDATA["repo:firmajoselozano.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="83" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="128" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d07ce080-6f71-4860-acb6-242b5d58174c" x="69" y="0" width="484" height="61" forecolor="#434F77"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="18" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[CERTIFICADO DE FORMACIÓN DE MANIPULADOR DE ALIMENTOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="431" splitType="Stretch">
+			<textField>
+				<reportElement uuid="92561444-606a-417e-a088-b1addb9be30e" x="69" y="0" width="484" height="431"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Arial" size="12" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<p><b>D. "+$F{denominaformador}+"</b>, con DNI <b>"+$F{cif}+"</b>, como responsable de la empresa <b>"+$P{NOMBREEMPRESA}+"</b> con domicilio "+$F{direccion1}+" "+$F{direccion2}+" en "+$F{municipios}+"("+$F{codpostales}+") provincia de "+$F{provincias}+" dedicada a la actividad de formación y consultoría de higiene alimentaria."+"</p><p></p><p>Certifica que " +$V{DonDna}+" <b>"+$F{apellidos}+" "+$F{nombres}+"</b> con Dni "+$F{dni}+" ha recibido un curso de formación de manipuladores de alimentos de <b>"+$F{denominacurso}+"</b> por quien suscribe y conforme "+$F{contenidolegisla}+"</p>"+"<p></p><p></p><p>"+$F{contenidocurso}+"</p> <p></p><p>"+"(*Se recomienda una formación continuada "+$F{frecuencia}+" conforme a la actividad y APPCC) </p>"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="126" splitType="Stretch">
+			<frame>
+				<reportElement uuid="b93ab8f0-aa89-4ea7-84c2-91457f31651d" x="124" y="17" width="355" height="84"/>
+				<textField>
+					<reportElement uuid="c37c6724-ccdc-4763-b974-ac64af613784" x="0" y="0" width="355" height="84"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Fdo. "+$F{denominaformador}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</summary>
+</jasperReport>

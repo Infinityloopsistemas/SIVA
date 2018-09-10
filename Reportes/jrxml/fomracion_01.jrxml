@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relacionpersonal" language="groovy" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="20" bottomMargin="20" uuid="bfd0da00-af95-4c72-a089-9fe25f9848b1">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.jasperserver.reportUnit" value="/siva/appcc/planes/plancontrol_mode_01"/>
+	<property name="ireport.jasperserver.url" value="http://176.58.121.31:8080/jasperserver/services/repository"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="PieChartDataset" uuid="5c03800d-15bf-431e-bdd9-650b570ba117"/>
+	<parameter name="pmanautctrlid" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[9]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT appcc_appcc.denominacion  as appccdenomina,
+       appcc_appcc.fechaalta,
+       ADDDATE(appcc_relacionesentes.fechaalta,round(maestros_tiposfrecuencias.nounidades/24)) as fecharenovacion,
+       maestros_generales_tipoplancontrol.denominacion as plancontroldenomina,
+       maestros_personal.apellidos,
+       maestros_personal.nombres,
+       maestros_personal.cargo,
+       maestros_generales_tiposcatprofesional.denominacion as catprofdenomina,
+       maestros_personal.dni,
+       appcc_relacionesentes.fechabaja
+  FROM    (   (   (   (   (   siva.appcc_relacionesentes appcc_relacionesentes
+                           INNER JOIN
+                              siva.maestros_tiposfrecuencias maestros_tiposfrecuencias
+                           ON (appcc_relacionesentes.frecuencia_id =
+                                  maestros_tiposfrecuencias.id))
+                       INNER JOIN
+                          siva.appcc_manualautocontrol appcc_manualautocontrol
+                       ON (appcc_relacionesentes.manautctrl_id =
+                              appcc_manualautocontrol.id))
+                   INNER JOIN
+                      siva.appcc_appcc appcc_appcc
+                   ON (appcc_manualautocontrol.appcc_id = appcc_appcc.id))
+               INNER JOIN
+                  siva.maestros_generales_tipoplancontrol maestros_generales_tipoplancontrol
+               ON (appcc_manualautocontrol.tpplancontrol_id =
+                      maestros_generales_tipoplancontrol.id))
+           INNER JOIN
+              siva.maestros_personal maestros_personal
+           ON (appcc_relacionesentes.personal_id = maestros_personal.id))
+       INNER JOIN
+          siva.maestros_generales_tiposcatprofesional maestros_generales_tiposcatprofesional
+       ON (maestros_personal.catprofesional_id =
+              maestros_generales_tiposcatprofesional.id)
+              where appcc_relacionesentes.fechabaja is null and appcc_relacionesentes.manautctrl_id=$P{pmanautctrlid}]]>
+	</queryString>
+	<field name="appccdenomina" class="java.lang.String"/>
+	<field name="fechaalta" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecharenovacion" class="java.sql.Date"/>
+	<field name="plancontroldenomina" class="java.lang.String"/>
+	<field name="apellidos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cargo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="catprofdenomina" class="java.lang.String"/>
+	<field name="dni" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fechabaja" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band height="802" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement uuid="767740db-dd96-4648-8beb-b66fa89a4668" x="0" y="0" width="515" height="802" forecolor="#0D1117"/>
+			</rectangle>
+		</band>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="88" splitType="Stretch">
+			<frame>
+				<reportElement uuid="e5b48661-b338-4a07-9eb7-d531ac04f43e" mode="Transparent" x="0" y="0" width="513" height="81" forecolor="#1D0D0D" backcolor="#FFFFFF"/>
+				<rectangle>
+					<reportElement uuid="f89d2f0f-70c0-4459-864e-8c6b45178afe" x="0" y="57" width="381" height="23"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="61556647-af0e-4838-90e7-49d778210bc9" x="381" y="0" width="54" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Código]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="0eeee398-704c-42b5-9b86-365a871c9d0c" x="381" y="20" width="54" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Versión]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="cdf0e6b7-3fcb-4599-94cc-d88b8b7817ab" x="381" y="40" width="54" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Fecha]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d062952a-31ec-44c7-a138-243e44ec3519" x="381" y="60" width="54" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Tipo]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="b128f35b-aeda-4da4-aa10-0ae1669dfbe4" x="435" y="0" width="78" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["PLDI"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="8a8b15bc-24b9-4bbc-8c51-171c87d740b7" x="435" y="20" width="78" height="19"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["5"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="2c8f188c-358d-477b-8fab-cf5272dac5e0" x="435" y="60" width="78" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["Manual"]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="193cb855-bd29-47ad-8334-7d3e66d2c7f5" x="381" y="20" width="132" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="28d64993-74e4-4190-bc29-4066e31a6e01" x="381" y="39" width="132" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="f16a9261-fde0-4b97-aad9-8cb9706dba78" x="381" y="57" width="132" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="e7bf7e7e-609e-4a53-8320-96b90e469115" x="435" y="0" width="1" height="79"/>
+				</line>
+				<rectangle>
+					<reportElement uuid="6a2a9c4c-a17c-4371-a504-beafebd106f5" x="0" y="57" width="381" height="23" backcolor="#145FFA"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="f326e89f-e671-48d8-b1c3-c77b2ecbb71c" x="0" y="58" width="381" height="21" backcolor="#285CF2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["PLAN AUTOCONTROL (APPCC)"]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="a9a4bc8d-d442-4c13-af6e-d3ae8f026cb8" x="436" y="40" width="77" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{fechaalta}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="259b8eb6-361f-437a-850f-2955b070b3a0" x="2" y="1" width="199" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{appccdenomina}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="d8a27679-2e47-4ed9-a266-379f2b94643f" x="1" y="21" width="381" height="36"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{plancontroldenomina}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="96808327-5b0b-4170-a6ce-f9ad74f94068" x="381" y="1" width="1" height="78"/>
+				</line>
+				<line>
+					<reportElement uuid="b07dbd7c-15cc-4995-95d0-e032417ba517" x="381" y="79" width="130" height="1"/>
+				</line>
+			</frame>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="80" splitType="Stretch">
+			<frame>
+				<reportElement uuid="e0331f36-a979-400c-816c-dddc6cc9524d" x="354" y="0" width="159" height="42"/>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="5c91e2fe-7e3c-4419-b5bf-3d6ed4b2814f" x="78" y="0" width="81" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fechaalta}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="0b536f7a-f0cc-41ff-9e77-60029ad85ef7" x="0" y="0" width="78" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[F.Edición]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d4d96ee5-6a2a-43d4-8f7e-2767ceed49d0" x="0" y="20" width="78" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[F.Ultima Revisión]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement uuid="58af6983-5749-42f2-8ae3-3621896c1437" mode="Transparent" x="2" y="0" width="157" height="40"/>
+				</rectangle>
+			</frame>
+			<staticText>
+				<reportElement uuid="5fab0537-a21b-4fea-9fa9-4e640224829f" x="0" y="67" width="63" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DNI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="265512a1-991d-4e8f-b22e-6571759adc54" x="63" y="67" width="188" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APELLIDOS NOMBRES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d9d23eb7-1984-40d2-831f-92e0ca8b5295" x="251" y="67" width="69" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[F.RENOVACION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8443be41-fa4b-4fcd-9f1f-f7dab135acd1" x="320" y="67" width="85" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1a55e4b1-de1a-470c-8f53-27e6ada19c20" x="405" y="67" width="106" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAT. PROFESIONAL]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="654b992b-7501-40c6-a105-96cee546bc85" x="1" y="76" width="511" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10">
+			<textField>
+				<reportElement uuid="6968f16f-c0af-459c-98d2-537f935c89c1" x="1" y="0" width="64" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dni}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e2af9d8d-479e-42f8-bfed-14c63d5fbd77" x="65" y="0" width="100" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{apellidos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d162c7e4-b450-44a8-a4c5-4b11344047d4" x="165" y="0" width="86" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="890119c2-0231-4b07-93a6-ac7c9cac5451" x="320" y="0" width="85" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cargo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cfc1890d-dd1c-4e98-9577-810ecc922950" x="405" y="0" width="106" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprofdenomina}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="1813559b-2ac5-4d0b-94b9-ed52ffdfeb8a" x="251" y="0" width="69" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecharenovacion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="4" splitType="Stretch">
+			<line>
+				<reportElement uuid="460ebe54-4af4-400c-9bff-126ccab19c53" positionType="FixRelativeToBottom" x="0" y="3" width="512" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<frame>
+				<reportElement uuid="8432b842-4a82-4dd5-9c87-82e77f787396" mode="Opaque" x="2" y="0" width="513" height="13" forecolor="#D0B48E" backcolor="#285CF2"/>
+				<textField evaluationTime="Report">
+					<reportElement uuid="80352038-bad3-443b-bfce-bc62e4a10583" style="Column header" x="461" y="0" width="40" height="13" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="e5ae54ee-4e3d-4150-9311-8c910c64eac7" style="Column header" x="381" y="0" width="80" height="13" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement uuid="8b04f8d9-e926-4123-a51b-916e6a3ef6b0" style="Column header" x="2" y="0" width="197" height="13" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

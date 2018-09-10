@@ -1,0 +1,303 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% load l10n %}
+{% load crispy_forms_tags %}
+{% load floppyforms %}
+{% load selectable_tags %}
+{% include_jquery_libs %}
+{% include_ui_theme 'ui-lightness' %}
+{% block extrahead %}
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/base/jquery-ui.css" type="text/css">
+    <link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="box corner-all">
+                    <div class="box-header grd-white color-silver-dark corner-top" >
+                        <div class="header-control">
+                            <a data-box="collapse"><i class="icofont-caret-up"></i></a>
+                            <a data-box="close">×</a>
+                        </div>
+                        <span>  {{ auxiliar.etiqueta }} </span>
+
+                    </div>
+                    <div  class="box-tab box-body">
+                     <div class="box-header corner-top">
+                        <div class="header-control pull-right">
+                            <a data-box="collapse"><i class="icofont-caret-up"></i></a>
+                        </div>
+                        <ul class="nav nav-tabs" id="tab-stat">
+                            <li class="active"><a data-toggle="tab" href="#tab-zonas"><b>Zonas</b></a></li>
+                            <li><a data-toggle="tab" href="#tab-operaciones"><b>Operaciones</b></a></li>
+                            <li><a data-toggle="tab" href="#tab-medidas"><b>Medidas</b></a></li>
+                        </ul>
+                     </div>
+                     <form action="." method="post">{% csrf_token %}
+                     <div class="box-body">
+                         {{ form.id }}
+                         {{ form.manautctrl_id }}
+                         <div class="tab-content">
+
+                             <div class="tab-pane fade in active" id="tab-zonas">
+
+                                 <div class="row-fluid">
+                                  <span></span>
+                                  <div class="span12">
+                                        <div class="span4">
+
+                                            <div class="control-group">
+                                            <label>{{ form.fecha.label }}</label>
+                                                <div class="input-append date" data-form="datepicker"  data-date-format="dd/mm/yyyy">
+                                                       {{ form.fecha }}
+                                                        <span class="add-on"><i class="icon-th"></i></span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                         <div class="span4">
+
+                                             <div class="control-group">
+                                                 <label>{{ form.frecuencia.label }}</label>
+                                                 {{ form.frecuencia }}
+                                                 <p id="hint_id_peligro" class="help-block">Autoselección</p>
+                                             </div>
+                                         </div>
+
+                                     <div class="span4">
+
+                                             <div class="control-group">
+                                                    <label>{{ form.zonas.label }}</label>
+                                                   {{ form.zonas }}
+                                                    <p id="hint_id_peligro" class="help-block">Autoselección</p>
+
+                                             </div>
+
+                                     </div>
+                                   </div>
+
+                                     <div class="span10">
+                                     <div class="control-group">
+                                        {% if etiquetas == None  %}
+                                             <label>{{ form.zonalimpieza.label }}</label>
+                                        {% else %}
+                                             <label>{{ etiquetas.zonas }}</label>
+                                        {% endif %}
+
+                                         {{  form.zonalimpieza }}
+                                     </div>
+                                     </div>
+
+                                     <div class="span10">
+                                         <div class="control-group">
+                                              {% if etiquetas == None  %}
+                                                 <label>{{ form.proclimpieza.label }}</label>
+                                              {% else %}
+                                                     <label>{{ etiquetas.instrucciones }}</label>
+                                              {% endif %}
+                                             {{  form.proclimpieza }}
+
+                                         </div>
+                                     </div>
+
+
+
+                                          <div class="span10">
+                                            {{ form_detail_cd.management_form }}
+                                            <table class="table table-bordered table-striped responsive dataTable">
+                                             <thead>
+                                             <th>Consumibles </th>
+                                             <th>Dosis </th>
+                                             <th> Accion</th>
+                                             </thead>
+
+                                             {%  for form_line in form_detail_cd %}
+
+                                                 {%  crispy form_line %}
+                                             {% endfor %}
+
+                                         </table>
+                                         </div>
+
+
+                                    </div>
+
+                              </div>
+
+                             <div class="tab-pane fade" id="tab-operaciones">
+
+                               <div class="row-fluid">
+                                   <span></span>
+                                    <div class="span10">
+                                     <div class="span5">
+                                         <div class="control-group">
+                                             <label>{{ form.tercero.label }}</label>
+                                             {{ form.tercero}}
+                                             <p id="hint_id_peligro" class="help-block">Autoselección</p>
+                                         </div>
+                                     </div>
+                                     <div class="span5">
+                                         <div class="control-group">
+                                             <label>{{ form.personal.label }}</label>
+                                             {{ form.personal }}
+                                             <p id="hint_id_peligro" class="help-block">Autoselección</p>
+                                         </div>
+                                     </div>
+                                    </div>
+                                 <div class="span10">
+                                     <div class="span5">
+                                        <div class="control-group">
+                                             <label>{{ form.equipos.label }}</label>
+                                                    {{ form.equipos }}
+                                                    <p id="hint_id_peligro" class="help-block">Autoselección</p>
+                                        </div>
+                                     </div>
+                                      <div class="span5">
+                                        <div class="control-group">
+                                             <label>{{ form.productos.label }}</label>
+                                                    {{ form.productos }}
+                                                    <p id="hint_id_peligro" class="help-block">Autoselección</p>
+                                        </div>
+                                     </div>
+                                 </div>
+                                 <div class="span10">
+                                     <div class="control-group">
+                                         <label>{{ form.operaciones.label }}</label>
+
+                                         {{  form.operaciones }}
+
+                                     </div>
+                                 </div>
+
+                                </div>
+                            </div>
+
+                             <div class="tab-pane fade" id="tab-medidas">
+
+                                <div class="row-fluid">
+                                    <span></span>
+                                     <div class="span10">
+                                         <div class="span5">
+
+                                             <div class="control-group">
+                                                 <label>{% trans "Medidas Vigilancia" noop %}</label>
+                                                 {{ form.tpmedvig}}
+                                                 <p id="hint_id_peligro" class="help-block">Autoselección</p>
+                                             </div>
+                                         </div>
+                                         <div class="span5">
+
+                                             <div class="control-group">
+                                                 <label>{%  trans "Actuación Preventiva" noop %} </label>
+                                                 {{ form.tpmedactp }}
+                                                 <p id="hint_id_peligro" class="help-block">Autoselección</p>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="span10">
+
+                                         <div class="control-group">
+                                             <label>{% trans "Actuacion Correctiva" noop %}</label>
+                                             {{ form.tpmedactc }}
+                                             <p id="hint_id_peligro" class="help-block">Autoselección</p>
+                                         </div>
+
+                                     </div>
+                                     <div class="span10">
+                                         <div class="control-group">
+                                             <label>{{ form.observaciones.label }}</label>
+
+                                             {{  form.observaciones }}
+
+                                         </div>
+                                     </div>
+
+                                 <div class="span10">
+                                     {{ form_detail_va.management_form }}
+                                     <table class="table table-bordered table-striped responsive dataTable">
+                                         <thead>
+                                         <th>Parametros </th>
+                                         <th>Valor </th>
+                                         <th>Tolerancia %</th>
+                                         <th> Accion</th>
+                                         </thead>
+
+                                         {%  for form_line in form_detail_va %}
+                                             {%  crispy form_line %}
+                                         {% endfor %}
+
+                                     </table>
+                                 </div>
+
+                               </div>
+                             </div>
+
+
+                         </div>
+
+                    </div>
+
+                     <div class="form-actions">
+
+                            <input id="submit-id-update" class="btn btn-primary" type="submit" value="Guardar" name="Update">
+                            <input id="button-id-cancel" class="btn" type="button" value="Cancelar" name="cancel">
+
+
+                         </div>
+
+                       </form>
+                    </div>
+    </div>
+{%  endblock %}
+
+{% block footer %}
+    <script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.formset.js"></script>
+    <script>$.fn.bootstrapBtn = $.fn.button.noConflict();</script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#button-id-cancel').click(function () {
+                parent.history.back();
+            });
+            $('.form-row.inline.{{ form_detail_cd.prefix }}').formset({
+                prefix: '{{ form_detail_cd.prefix }}',
+                added: function(row) {
+                    bindSelectables($(row));
+                }
+            });
+            $('.form-row.inline.{{ form_detail_va.prefix }}').formset({
+                prefix: '{{ form_detail_va.prefix }}',
+                added: function(row) {
+                    bindSelectables($(row));
+                }
+
+            });
+            $('[data-form=datepicker]').datepicker({format : 'dd/mm/yyyy',  language: 'es'  });
+
+            $('textarea').each(function(index)
+            {
+                $(this).addClass('span12 textarea')
+                $(this).wysihtml5();
+
+            });
+
+            $.ui.djselectable.prototype._comboButtonTemplate = function (input) {
+                var icon = $("<i>").addClass("icon-chevron-down");
+                // Remove current classes on the text input
+                $(input).attr("class", "");
+                // Wrap with input-append
+                $(input).wrap('<div class="input-append" />');
+                // Return button link with the chosen icon
+                return $("<a>").append(icon).addClass("btn btn-small");
+            };
+            $.ui.djselectable.prototype._removeButtonTemplate = function (item) {
+                var icon = $("<i>").addClass("icon-remove-sign");
+                // Return button link with the chosen icon
+                return $("<a>").append(icon).addClass("btn btn-small pull-right");
+            };
+
+        });
+    </script>
+
+
+{%  endblock %}

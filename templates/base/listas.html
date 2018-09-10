@@ -1,0 +1,38 @@
+{% extends "base/base.html" %}
+{% block body %}
+            {% block arbol %}
+            {%  endblock %}
+    <div class="row-fluid" >
+
+        <div class="span12">
+
+            <div class="box corner-all">
+
+                <div class="box-header grd-white corner-top">
+                        <div class="header-control">
+                        <a data-box="collapse"><i class="icofont-caret-up"></i></a>
+                        <a data-hide="bounceOutRight" data-box="close">×</a>
+                    </div>
+                    <h4><span>{% block listatitulo %}{% endblock %} </span></h4>
+
+                </div>
+                        <div class="box-body">
+                            <table id="datatables" class="table table-bordered table-striped responsive">
+                                <thead>
+                                    {% block titulotabla %}
+
+                                    {% endblock %}
+                                </thead>
+                                <tbody>
+                                    {% block cuerpotabla %}
+
+                                    {% endblock %}
+                                </tbody>
+                            </table>
+                        </div>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

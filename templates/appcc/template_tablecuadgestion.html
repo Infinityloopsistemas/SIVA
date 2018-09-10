@@ -1,0 +1,27 @@
+{% load mis_filtros %}
+<tr>
+    <td>
+        <a href="{{ node.get_absolute_url }}">
+          {{ node.denominacion }}
+        </a>
+    </td>
+    <td>
+        <button  class="btn btn-mini" type="button" onclick="document.location.href='{{ node.urlDocumentos }}';return false;">Documentos</button>
+    </td>
+    {% if node.urlImpresion != None %}
+        <td>
+            <button  class="btn btn-mini" type="button" onclick="document.location.href='{{ node.urlImpresion }}';return false;">Imprimir</button>
+        </td>
+    {% endif %}
+    <td>
+
+    	{% if request.user|in_group:"responsables,coordinadores" %}
+        <button  class="btn btn-mini btn-danger" type="button" disabled>Eliminar</button>
+        {% else %}
+        <button  class="btn btn-mini btn-danger" type="button" onclick="document.location.href='{{ acciones.eliminar }}/{{ node.pk }}/';return false;">Eliminar</button>
+        {% endif %}
+
+
+
+    </td>
+</tr>

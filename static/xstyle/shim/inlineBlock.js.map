@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"inlineBlock.js",
+"lineCount":2,
+"mappings":"A;AAWAA,MAAA,2BAC4B,QAAA,qBAIbC,QAAAA,CAAUC,CAAVD,CAAgBE,CAAhBF,sBAOYE,CAPZF,kCAJa,EAD5B;",
+"sources":["inlineBlock.js.uncompressed.js"],
+"names":["define","onProperty","name","value"]
+}

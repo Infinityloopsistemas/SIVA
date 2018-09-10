@@ -1,0 +1,59 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+{% load selectable_tags %}
+{% include_jquery_libs %}
+{% include_ui_theme 'ui-lightness' %}
+{% block extrahead %}
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/base/jquery-ui.css" type="text/css">
+    <link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet">
+    <link href="{{ STATIC_URL }}stilearn/css/colorpicker.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}spectrum/css/spectrum.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+
+            <div class="box corner-all">
+                <div class="box-header grd-white color-silver-dark corner-top" >
+                    <div class="header-control">
+                        <a data-box="collapse"><i class="icofont-caret-up"></i></a>
+                        <a data-box="close">x</a>
+                    </div>
+                    <span>  Editar {{ auxiliar.etiqueta }} </span>
+
+                </div>
+                <div class="box-body">
+                    <form action="." method="post" enctype="multipart/form-data">
+
+                            {%  crispy  form %}
+                            
+                            {% if form.instance.hay_imagenes %}
+                                <img alt="algo" src="{{ form.instance.get_imagen }}" width="300">
+                            {% endif %}
+
+                    </form>
+                </div>
+            </div>
+
+{%  endblock %}
+
+{% block footer %}
+    <script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#button-id-cancel').click(function () {
+                parent.history.back();
+            })
+            
+            $('[data-form=uniform]').uniform()
+
+            // wysihtml5
+            $('[data-form=wysihtml5]').each(function(index)
+            {
+                $(this).wysihtml5();
+            });
+
+
+        });
+
+    </script>
+{%  endblock %}

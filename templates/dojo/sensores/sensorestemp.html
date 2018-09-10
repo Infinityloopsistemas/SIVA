@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+<link rel="Stylesheet" type="text/css" href="{{ STATIC_URL }}flat/CSS/dojo/flat.css"/>
+<link rel="Stylesheet" type="text/css" href="{{ STATIC_URL }}flat/CSS/dgrid/css/dgrid.css"/>
+<link rel="Stylesheet" type="text/css" href="{{ STATIC_URL }}flat/CSS/dgrid/css/skins/skin.css"/>
+<link rel="Stylesheet" type="text/css" href="{{ STATIC_URL }}flat/CSS/esri/css/esri_custom.css"/>
+ <style type="text/css">
+        @import "{{STATIC_URL}}dojox/widget/Calendar/Calendar.css";
+ </style>
+<meta charset="UTF-8">
+<style type="text/css">
+    body, html {
+        font-family: helvetica, arial, sans-serif;
+        font-size: 90%;
+    }
+</style>
+
+<title>SENSORES TEMPERATURAS</title>
+
+<script src="{{ STATIC_URL }}dojo/dojo.js" data-dojo-config="async:true"></script>
+
+</head>
+
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/dojo/1.10.1/dojo/dojo.js"></script> -->
+
+
+
+
+
+<script>
+var store;
+var outputx = [];
+var outputy = [];
+var output = [];
+var grafica;
+var colocadom;
+var fecha;
+var selmes;
+
+
+require(["dojo","dijit/form/FilteringSelect",
+            "dijit/form/ComboBox",
+            "dojo/data/ItemFileReadStore",
+            "dojo/request/script",
+            "dojo/deferred",
+            "dojo/store/Memory",
+            "dojo/parser",
+            "dijit/form/DateTextBox",
+            "dojo/date/locale",
+            "dijit/layout/ContentPane",
+            "dijit/layout/BorderContainer",
+            "dijit/layout/TabContainer",
+            "dojo/dom",
+            "dojo/number",
+            "dojox/widget/MonthAndYearlyCalendar",
+            "dijit/form/Button"],
+    function(dojo){
+        dojo.ready(function () {
+        var empid    = {{ empresa }};
+        var urlserver= "{{ url_server }}";
+        var token    = " Token {{ token }}";
+
+        colocadom = function (pondom, lugar) {
+            require(["dojo/dom-construct"], function (domConstruct) {
+                var node = domConstruct.toDom(pondom);
+                domConstruct.place(node, lugar);
+            });
+        }
+
+        var parambusca = '<table> <tr><td>Por Dia:</td></tr> ' +
+                '<tr> <td> <div id="fechaSelect"></div></td> </tr> ' +
+                '<tr><td>Por  Mes: </td> </tr> <tr> <td> <div id="mesSelect"></div> </td></tr>'+
+                '<tr><td>Selección : </td> </tr> <tr> <td><div  id="filterSelect"></div> </td></tr>' +
+                '<tr><td><div id="limpiaBoton"> </div> </td> </tr> </table>';
+
+        var bc = dijit.layout.BorderContainer({
+            liveSplitters: true, gutters: true,
+        }, "appLayout");
+
+
+        var header = new dijit.layout.ContentPane({
+            region: 'top',
+            splitter: true,
+            content: '<h1><center>GRAFICAS SEGUIMIENTOS TEMPERATURAS</center> </h1>'
+        });
+
+        var cp1 = new dijit.layout.ContentPane({
+            region: "left",
+            splitter: true,
+            style: "height: 100%; width: 15%;",
+            content: parambusca
+        });
+
+        bc.addChild(header);
+
+
+        var tc = new dijit.layout.TabContainer({ id: "Graficas", region: "center", style: "width: 100% ; height: 100% ", splitter: true, doLayout: false, });
+
+        bc.addChild(tc);
+        bc.addChild(cp1);
+
+
+        // put the top level widget into the document, and then call startup()
+        document.body.appendChild(bc.domNode);
+
+        bc.startup();
+
+        var botonLimpiar = new dijit.form.Button({
+            label: "Limpiar",
+            onClick: function () {
+                dojo.byId("fechaSelect").value = "";
+                dojo.byId("mesSelect").value = "";
+                dojo.byId("filterSelect").value = "";
+                fecha = null;
+                selmes= null;
+            }
+        },"limpiaBoton");
+
+
+
+        fecha = new dijit.form.DateTextBox(
+                {
+                    id: "fechaSelect",
+                    name: "fechaSelect",
+                    placeHolder: "Seleccione Fecha",
+                    value: null,
+                    onChange: function (fechaSelect) {
+
+                        fecha = dojo.date.locale.format(fechaSelect, {datePattern: "ddMMyyyy", selector: "date"})
+
+                    }
+                }, "fechaSelect"
+        );
+        var selmes;
+
+         fecha = new dijit.form.DateTextBox(
+                {
+                    id: "mesSelect",
+                    name: "mesSelect",
+                    placeHolder: "Seleccione Mes",
+                    // constraints: {datePattern: 'MM/yyyy'},
+                    popupClass:'dojox.widget.MonthAndYearlyCalendar',
+                    onChange: function (fechaSelect) {
+
+                       selmes = dojo.date.locale.format(fechaSelect, {datePattern: "MMyyyy", selector: "date"})
+
+
+                    }
+
+
+                }, "mesSelect"
+        );
+
+
+
+
+        var d = new dojo.Deferred;
+
+
+        d.addCallbacks(function (dataequipo) {
+            var equiposData = new dojo.store.Memory({data: dataequipo});
+
+
+            var select = new dijit.form.ComboBox({
+                id: "filterSelect",
+                name: "equipos",
+                style: "width: 100%;",
+                placeHolder: "Selecione Equipo",
+                store: equiposData,
+                searchAttr: "equipos",
+                onChange: function (filterSelect) {
+                    //console.log("combobox onchange ", filterSelect, this.item);
+                    idsonda = dijit.byId('filterSelect').item.tracksondas
+                    var urlbusca = urlserver+"rest_loaddata/sensorfecha/"
+
+
+                    if (typeof fecha == 'string'){
+                        var tipo= "HH:mm"
+                        var tabtil = fecha;
+                        var xhrArgs1 = {
+                            url: urlbusca,
+                            content: {
+                                empid: empid,
+                                fecha: fecha,
+                                idsonda: idsonda
+                            },
+                            headers: {'Authorization': token },
+                            handleAs: "json",
+
+                        }
+                    }
+                    if ( typeof selmes == 'string'){
+                        var tipo="dd HH:mm"
+                        var tabtil= selmes;
+                        var xhrArgs1 = {
+                            url: urlbusca,
+                            content: {
+                                empid: empid,
+                                selmes: selmes,
+                                idsonda: idsonda
+                            },
+                            headers: {'Authorization': token },
+                            handleAs: "json",
+
+                        }
+                    }
+
+
+
+                    if (typeof fecha == 'string'  || typeof selmes == 'string') {
+
+                        var titulografica = filterSelect;
+
+                        var domgrafica = idsonda + tabtil;
+
+                        var idegrafica = '<div id="' + domgrafica + '"style="height: 650px; width: 100%;"></div>';
+                        tab = new dijit.layout.ContentPane({ id: "tab" + domgrafica, title: tabtil, style: "height: 100%; width: 100%;", closable: true });
+
+                        tc.addChild(tab);
+                        tc.selectChild(tab);
+
+
+                        colocadom(idegrafica, "tab" + domgrafica)
+
+
+                        grafica(xhrArgs1, domgrafica, titulografica,tipo);
+
+                        delete tab;
+                    }
+                    else
+                    {
+                        require(["dijit/ConfirmDialog", "dojo/domReady!"], function(ConfirmDialog){
+                        dialogo = new ConfirmDialog({
+                            title: "Atención",
+                            content: "Debe seleccionar una fecha",
+                            style: "width: 300px"
+                        });
+                        dialogo.show();
+                    }
+                        )};
+                }
+            }, "filterSelect");
+
+            select.startup();
+
+
+        })
+
+    var utlsensor  =  urlserver+"rest_appcc/detregsensor/" ;
+    var xhrArgs = {
+            url: utlsensor,
+            content: {
+                empid: empid
+            },
+            headers: {'Authorization': token },
+            handleAs: "json",
+            load: function (response) {
+                //console.log(response)
+                d.callback(response);
+            }
+        }
+
+        var cargaDetReg = dojo.xhrGet(xhrArgs);
+})});
+
+
+grafica = function (xhrArgs1, domgrafica, titulografica,tipo) {
+    require(["dojox/charting/Chart", "dojox/charting/themes/PlotKit/blue", "dojo/number", "dojo/store/Observable", "dojo/store/Memory", "dojo/json", "dojo/request/script", "dojo/query", "dojo/dom-construct", "dojo/json", "dojo/on", "dojox/charting/StoreSeries", "dojox/charting/plot2d/Default", "dojox/charting/plot2d/Grid", "dojox/charting/plot2d/Lines", "dojox/charting/axis2d/Default", "dojox/charting/action2d/Tooltip", "dojo/domReady!"],
+            function (Chart, Harmony, number, Observable, Memory, StoreSeries, script, Tooltip) {
+
+                dijit.byId("tab" + domgrafica).resize();
+                output =[];
+                outputx =[];
+                outputy =[];
+                var xhrLoaded = function (results) {
+
+                    for (var i = 0; i < results.length; i++) {
+                        var detail = results[i];
+                        //output.push({ Temp: detail.Temperature , Fecha : detail.date, Serie: 1 })
+                        outputx.push(detail.date)
+                        outputy.push(Number(detail.Temperature))
+                        output.push({"x": detail.date, "y": Number(detail.Temperature), "sensor": detail.tracksonda})
+                    }
+
+                    //console.log(output);
+                    store = Observable(new Memory({
+                        data: output
+
+                    }));
+
+
+                    chart = new Chart(domgrafica, {
+                        title: titulografica,
+                        titlePos: "top",
+                        titleGap: 25,
+                        titleFont: "normal normal normal 20pt Arial",
+                        titleFontColor: "blue",
+                    });
+
+                    // Set the theme
+                    chart.setTheme(dojox.charting.themes.PlotKit.blue);
+
+
+                    // Add the only/default plot
+                    chart.addPlot("Grid", {
+                        type: "Grid",
+                        markers: true,
+                        hMajorLines: true,
+                        hMinorLines: true,
+                        vMajorLines: true,
+                        vMinorLines: true,
+                        tension: 3
+
+
+                    });
+
+                    var minX = Math.min.apply(Math, output.map(function (val) {
+                        return val.x;
+                    }));
+                    var maxX = Math.max.apply(Math, output.map(function (val) {
+                        return val.x;
+                    }));
+
+                    // Add axes
+                    chart.addAxis("x", {
+                        fixLower: minX,
+                        fixUpper: maxX,
+                        minorTicks: true,
+                        natural: true, stroke: "grey",
+                        majorTick: {stroke: "black", length: 4},
+                        minorTick: {stroke: "gray", length: 2},
+                        labelFunc: function (n) {
+                            //console.log(n);
+                            var date = new Date(dojo.number.parse(n));
+                            //console.log(date);
+                            return dojo.date.locale.format(date, {
+                                    selector: "date",
+                                    datePattern: tipo });
+                                    }
+                        });
+
+                    var minY = Math.min.apply(Math, output.map(function (val) {
+                        return val.y;
+                    }));
+                    var maxY = Math.max.apply(Math, output.map(function (val) {
+                        return val.y;
+                    }));
+
+                    chart.addAxis("y", {vertical: true, fixLower: minY, fixUpper: maxY, minorTickStep: 1});
+
+                    // Add the storeseries - Query for all data
+
+                    //var serie = new dojox.charting.StoreSeries({ query: { tracksonda: 1}}, "date")
+                    chart.addSeries("Sonda 1", output);
+                    //chart.addSeries("Sonda 1", new dojox.charting.StoreSeries(store, {query: {sensor: 1}}, "y"));
+                    //chart.addSeries("Sonda 2", new dojox.charting.StoreSeries( store, {query: { sensor: 7} }, "y"));
+                    //chart.addSeries("Sonda 3", new dojox.charting.StoreSeries( store, {query: { sensor: 8} }, "y"));
+                    // Render the ch
+
+                    var tip = new Tooltip(this.chart, "default", { 'class': 'kaboom' });
+
+                    chart.render();
+
+
+                }
+
+                //var jsonvar = JSON.stringify(data);
+                var cargaCurvas = dojo.xhrGet(xhrArgs1).then(function(data){ xhrLoaded(data) } );
+
+{#                var performXhr = function () {#}
+{#                    var deferred = script.get(urlbusquedad, {jsonp: "callback"})#}
+{#                    deferred.then(xhrLoaded);#}
+{#                }#}
+{##}
+{##}
+{#                performXhr();#}
+
+
+            });
+
+}
+
+
+</script>
+
+
+
+
+
+<body>
+<div id="appLayout" style="width: 1600px; height: 800px;"></div>
+</body>
+</html>

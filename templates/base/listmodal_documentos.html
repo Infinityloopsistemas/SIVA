@@ -1,0 +1,75 @@
+{% extends "base/modal_list.html" %}
+{% load crispy_forms_tags %}
+{% block extrahead %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+{% endblock %}
+{% block listatitulo %}
+    <h4>{{ auxiliar.etiqueta }}</h4>
+    <button class="btn btn-mini btn-primary" type="button" onclick="document.location.href='{{ acciones.crear}}/{{ acciones.modelo }}/{{ acciones.id }}';return false;"> Añadir Nuevo {{ auxiliar.etiqueta }}</button>
+
+    <button id="refresh" class="btn btn-default" type="button" onclick="documento.location.reload()">
+    	<span class="icon-refresh"></span>
+	</button>
+{% endblock %}
+{% block titulotabla %}
+    <tr>
+        {%  for obj in cabezera %}
+            <th>{{ obj }}</th>
+        {%  endfor %}
+    </tr>
+{%  endblock %}
+{% block cuerpotabla %}
+    {% if object_list %}
+        {% for object in object_list %}
+            <tr>
+
+                <td>
+                    <a href="{{ object.get_absolute_url }}">
+                        {{ object.denominacion }}
+                    </a>
+                </td>
+               <td>
+                 {% autoescape off %}
+                       {{ object.verDocumento }}
+                    {% endautoescape%}
+                </td>
+
+                <td>
+
+                    <button  class="btn btn-mini btn-danger" type="button" onclick="document.location.href='{{ acciones.eliminar }}/{{ object.id }}/';return false;">Eliminar</button>
+                </td>
+            </tr>
+        {% endfor %}
+
+
+    {% else %}
+        <p>No Existen {{ auxiliar.etiqueta }} Creadas.</p>
+    {% endif %}
+{% endblock %}
+{% block footer %}
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery.fancybox-1.3.4/fancybox/jquery.easing-1.3.pack.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("a.fancybox").fancybox({
+                'titleShow'     : false,
+                'transitionIn'  : 'elastic',
+                'transitionOut' : 'elastic',
+                'easingIn'      : 'easeOutBack',
+                'easingOut'     : 'easeInBack',
+                'type'          : 'image'
+            });
+
+            $('#myModal').modal('toggle').css({'width': '1024px','margin-left': function () {return -($(this).width() / 2);}})
+
+            $('#myModal').on('hidden', function () {
+                parent.history.back();
+            })
+            
+            $('#refresh').on('click', function () {
+  				document.location.reload();
+			})
+
+        });
+    </script>
+{%  endblock %}

@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="registros_model_01" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d12de742-ee8b-4b07-bdbe-06f292d2dc8f">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="57"/>
+	<property name="ireport.jasperserver.reportUnit" value="/siva/appcc/registros/registros_model_01"/>
+	<property name="ireport.jasperserver.url" value="http://176.58.121.31:8080/jasperserver/services/repository"/>
+	<style name="BANDAS" mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="pfinicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pffin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pdetregid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="phorarioid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     appcc_appcc.`denominacion` AS appcc_appcc_denominacion,
+     appcc_appcc.`fechaedicion` AS appcc_appcc_fechaedicion,
+     appcc_manualautocontrol.`appcc_id` AS appcc_manualautocontrol_appcc_id,
+     MAESTROS_GENERALES('TIPOSPLANCONTROL',appcc_manualautocontrol.`tpplancontrol_id`) AS txttpplancontrol,
+     appcc_cabregistros.`id` AS appcc_cabregistros_id,
+     siva.MAESTROS('TIPOSMEDIDASVIGILANCIA',appcc_cabregistros.`tpmedvig_id`) AS txttpmedvig,
+     siva.MAESTROS('TIPOSLIMITESCRITICOS',appcc_detallesregistros.`tplimitcrit_id`)  AS txttplimitcrit,
+     siva.MAESTROS('TIPOSFRECUENCIAS',appcc_cabregistros.`frecuencia_id`) AS txtfrecuencia,
+     siva.MAESTROS('TIPOSMEDIDASACTUACION',appcc_cabregistros.`tpmedactc_id`) AS txttpmedactc,
+     appcc_cabregistros.`denominacion` AS appcc_cabregistros_denominacion,
+     appcc_registros.`fechadesde` AS appcc_registros_fechadesde,
+     appcc_registros.`fechahasta` AS appcc_registros_fechahasta,
+     appcc_registros.`valor` AS appcc_registros_valor,
+     appcc_registros.`estado` AS appcc_registros_estado,
+     appcc_registros.`observaciones` AS appcc_registros_observaciones,
+     siva.MAESTROS('ACTIVIDADES',appcc_detallesregistros.`actividades_id`) AS txtactividades,
+     siva.MAESTROS('ZONAS',appcc_detallesregistros.`zonas_id`) AS txtzonas,
+     siva.MAESTROS('CATALOGOEQUIPOS',appcc_detallesregistros.`equipos_id`) AS txtequipos,
+     siva.MAESTROS('UNIDADESANALITICAS',appcc_detallesregistros.`valanali_id`) AS txtunidades,
+     siva.MAESTROS('PERSONAL',plan.personal_id) AS txtperfirma,
+     appcc_detallesregistros.`id` AS appcc_detallesregistros_id,
+     appcc_manualautocontrol.`id` AS appcc_manualautocontrol_id,
+     appcc_appcc.`id` AS appcc_appcc_id,
+     appcc_registros.`id` AS appcc_registros_id,
+     siva.MAESTROS('HORARIOTURNOS',appcc_registros.`horarioturno_id`) txthorarioturno
+FROM
+     siva.`appcc_appcc` appcc_appcc INNER JOIN siva.`appcc_manualautocontrol` appcc_manualautocontrol ON appcc_appcc.`id` = appcc_manualautocontrol.`appcc_id` INNER JOIN siva.appcc_planautocontrol plan ON  appcc_manualautocontrol.id = plan.manautctrl_id
+     INNER JOIN siva.`appcc_cabregistros` appcc_cabregistros ON plan.`manautctrl_id` = appcc_cabregistros.`manautctrl_id`
+     INNER JOIN siva.`appcc_detallesregistros` appcc_detallesregistros ON appcc_cabregistros.`id` = appcc_detallesregistros.`cabreg_id`
+     INNER JOIN siva.`appcc_registros` appcc_registros ON appcc_detallesregistros.id = appcc_registros.detreg_id
+      where appcc_detallesregistros.`cabreg_id`= IF($P{pid}=0,appcc_detallesregistros.`cabreg_id`,$P{pid})
+and appcc_detallesregistros.`id`= IF($P{pdetregid}=0,appcc_detallesregistros.`id`,$P{pdetregid})
+and appcc_registros.`fechadesde`>=STR_TO_DATE($P{pfinicio},"%Y%m%d") and appcc_registros.`fechadesde`<=STR_TO_DATE($P{pffin},"%Y%m%d")
+and appcc_registros.horarioturno_id=IF($P{phorarioid}=0,appcc_registros.horarioturno_id,$P{phorarioid})
+group by
+ appcc_appcc.`denominacion`,
+     appcc_appcc.`fechaedicion` ,
+     appcc_manualautocontrol.`appcc_id`,
+     MAESTROS_GENERALES('TIPOSPLANCONTROL',appcc_manualautocontrol.`tpplancontrol_id`),
+     appcc_cabregistros.`id`,
+     siva.MAESTROS('TIPOSMEDIDASVIGILANCIA',appcc_cabregistros.`tpmedvig_id`) ,
+     siva.MAESTROS('TIPOSLIMITESCRITICOS',appcc_detallesregistros.`tplimitcrit_id`)  ,
+     siva.MAESTROS('TIPOSFRECUENCIAS',appcc_cabregistros.`frecuencia_id`) ,
+     siva.MAESTROS('TIPOSMEDIDASACTUACION',appcc_cabregistros.`tpmedactc_id`),
+     appcc_cabregistros.`denominacion`,
+     appcc_registros.`fechadesde` ,
+     appcc_registros.`fechahasta`,
+     appcc_registros.`valor` ,
+     appcc_registros.`estado` ,
+     appcc_registros.`observaciones` ,
+     siva.MAESTROS('ACTIVIDADES',appcc_detallesregistros.`actividades_id`),
+     siva.MAESTROS('ZONAS',appcc_detallesregistros.`zonas_id`),
+     siva.MAESTROS('CATALOGOEQUIPOS',appcc_detallesregistros.`equipos_id`),
+     siva.MAESTROS('UNIDADESANALITICAS',appcc_detallesregistros.`valanali_id`),
+     siva.MAESTROS('PERSONAL',plan.personal_id) ,
+     appcc_detallesregistros.`id`,
+     appcc_manualautocontrol.`id` ,
+     appcc_appcc.`id` ,
+     appcc_registros.`id`,
+     appcc_registros.`horarioturno_id`
+order by appcc_detallesregistros.`id`, appcc_registros.`fechadesde`]]>
+	</queryString>
+	<field name="appcc_appcc_denominacion" class="java.lang.String"/>
+	<field name="appcc_appcc_fechaedicion" class="java.sql.Date"/>
+	<field name="appcc_manualautocontrol_appcc_id" class="java.lang.Integer"/>
+	<field name="txttpplancontrol" class="java.lang.String"/>
+	<field name="appcc_cabregistros_id" class="java.lang.Integer"/>
+	<field name="txttpmedvig" class="java.lang.String"/>
+	<field name="txttplimitcrit" class="java.lang.String"/>
+	<field name="txtfrecuencia" class="java.lang.String"/>
+	<field name="txttpmedactc" class="java.lang.String"/>
+	<field name="appcc_cabregistros_denominacion" class="java.lang.String"/>
+	<field name="appcc_registros_fechadesde" class="java.sql.Date"/>
+	<field name="appcc_registros_fechahasta" class="java.sql.Date"/>
+	<field name="appcc_registros_valor" class="java.math.BigDecimal"/>
+	<field name="appcc_registros_estado" class="java.lang.Boolean"/>
+	<field name="appcc_registros_observaciones" class="java.lang.String"/>
+	<field name="txtactividades" class="java.lang.String"/>
+	<field name="txtzonas" class="java.lang.String"/>
+	<field name="txtequipos" class="java.lang.String"/>
+	<field name="txtunidades" class="java.lang.String"/>
+	<field name="txtperfirma" class="java.lang.String"/>
+	<field name="appcc_detallesregistros_id" class="java.lang.Integer"/>
+	<field name="appcc_manualautocontrol_id" class="java.lang.Integer"/>
+	<field name="appcc_appcc_id" class="java.lang.Integer"/>
+	<field name="appcc_registros_id" class="java.lang.Integer"/>
+	<field name="txthorarioturno" class="java.lang.String"/>
+	<group name="DETALLEREGISTRO">
+		<groupExpression><![CDATA[$F{appcc_detallesregistros_id}]]></groupExpression>
+		<groupHeader>
+			<band height="164">
+				<frame>
+					<reportElement uuid="d8529eef-9b73-4460-8226-5712eba7af62" x="-1" y="0" width="270" height="75"/>
+					<staticText>
+						<reportElement uuid="5d736524-d5ab-4d22-b7a2-91be65a0369b" x="10" y="0" width="260" height="16"/>
+						<textElement>
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Medidas de Vigilancia]]></text>
+					</staticText>
+					<textField>
+						<reportElement uuid="33c2d573-a338-4a26-a0a2-889b39d4ff8e" x="10" y="15" width="260" height="60"/>
+						<textElement>
+							<font fontName="Arial" size="8"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{txttpmedvig}]]></textFieldExpression>
+					</textField>
+					<rectangle>
+						<reportElement uuid="c87954d1-35dc-40f6-91ee-28b2cadd66fb" mode="Transparent" x="0" y="0" width="270" height="75"/>
+					</rectangle>
+				</frame>
+				<frame>
+					<reportElement uuid="ee0ca85e-46f9-4dd2-9357-2536a7c27570" x="269" y="0" width="285" height="75"/>
+					<staticText>
+						<reportElement uuid="800c2512-957c-444e-bfb5-f1c3007abe7e" x="10" y="0" width="270" height="16"/>
+						<textElement>
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Medidas Actuación Correctoras]]></text>
+					</staticText>
+					<textField>
+						<reportElement uuid="855752ec-db81-47c6-9752-b4a32841873f" x="10" y="16" width="270" height="20"/>
+						<textElement>
+							<font fontName="Arial" size="8"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{txttpmedactc}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement uuid="c698854e-0c6f-4bc4-94e3-26244167e3f9" x="10" y="55" width="275" height="20"/>
+						<textElement>
+							<font fontName="Arial" size="8"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{txtfrecuencia}]]></textFieldExpression>
+					</textField>
+					<staticText>
+						<reportElement uuid="7bf64ced-eb58-4b30-b8b0-8c1fe24350cd" x="10" y="39" width="270" height="16"/>
+						<textElement>
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Frecuencias]]></text>
+					</staticText>
+					<rectangle>
+						<reportElement uuid="e0278fd3-9c82-4d46-9abf-733ed1e5bdf6" mode="Transparent" x="0" y="0" width="285" height="75"/>
+					</rectangle>
+				</frame>
+				<frame>
+					<reportElement uuid="2c8de311-d0cf-482b-98d6-ca0a5050fc22" x="0" y="81" width="555" height="65"/>
+					<staticText>
+						<reportElement uuid="aaf511c2-2df5-4f2e-ab80-7a4a3a4373cd" x="3" y="0" width="78" height="16"/>
+						<textElement verticalAlignment="Middle">
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Actividades:]]></text>
+					</staticText>
+					<staticText>
+						<reportElement uuid="01ba86a5-41d7-48af-b109-8e4c33673600" x="270" y="30" width="21" height="16"/>
+						<textElement>
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Zona:]]></text>
+					</staticText>
+					<staticText>
+						<reportElement uuid="30f554f6-09af-4962-bbf6-a433cafdf1f7" x="3" y="30" width="78" height="16"/>
+						<textElement>
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Equipos:]]></text>
+					</staticText>
+					<textField pattern="" isBlankWhenNull="false">
+						<reportElement uuid="746b6cd4-553d-4933-8439-63d22cad0898" mode="Transparent" x="2" y="13" width="280" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+						<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+							<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+							<paragraph lineSpacing="Single" leftIndent="1"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{txtactividades}]]></textFieldExpression>
+					</textField>
+					<textField pattern="" isBlankWhenNull="false">
+						<reportElement uuid="d8f35afa-c499-443c-9cad-d7e65162d9ba" mode="Transparent" x="78" y="29" width="192" height="33" forecolor="#000000" backcolor="#FFFFFF"/>
+						<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+							<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+							<paragraph lineSpacing="Single" leftIndent="1"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{txtequipos}]]></textFieldExpression>
+					</textField>
+					<textField pattern="" isBlankWhenNull="false">
+						<reportElement uuid="01fa2f95-0114-4a66-9c17-69ecc0d1c24d" mode="Transparent" x="291" y="29" width="259" height="33" forecolor="#000000" backcolor="#FFFFFF"/>
+						<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+							<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+							<paragraph lineSpacing="Single" leftIndent="1"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{txtzonas}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement uuid="34bb3e08-8505-48fb-acd7-7ccb4f84c7a2" x="291" y="16" width="259" height="14"/>
+						<textElement>
+							<font fontName="Arial" size="8"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{txttplimitcrit}]]></textFieldExpression>
+					</textField>
+					<staticText>
+						<reportElement uuid="b4baefd0-4243-471b-8d9c-9a1545d946ac" x="291" y="0" width="259" height="16"/>
+						<textElement>
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Limites Criticos]]></text>
+					</staticText>
+					<rectangle>
+						<reportElement uuid="9f78ac21-4fbe-4501-8b75-1b08260c0607" mode="Transparent" x="0" y="0" width="555" height="65"/>
+					</rectangle>
+				</frame>
+				<frame>
+					<reportElement uuid="b82e7052-db3a-4df1-90b3-0aa9665196d5" x="0" y="146" width="555" height="16"/>
+					<staticText>
+						<reportElement uuid="904179eb-b288-4ddc-9101-4ea9bbceea49" x="0" y="0" width="78" height="16"/>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Fecha]]></text>
+					</staticText>
+					<staticText>
+						<reportElement uuid="520aa410-7aa3-4fd7-8664-52ab2fa7b58d" x="156" y="0" width="394" height="16"/>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Observaciones]]></text>
+					</staticText>
+					<rectangle>
+						<reportElement uuid="60d758ee-8d01-4720-9e7e-2baad8e0ee7c" mode="Transparent" x="0" y="0" width="555" height="16"/>
+					</rectangle>
+					<textField>
+						<reportElement uuid="5ce814f3-1d13-4f6f-8ab0-06af667acf79" x="78" y="1" width="78" height="15"/>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="Arial" size="8" isBold="true"/>
+						</textElement>
+						<textFieldExpression><![CDATA[($F{txtunidades}=="SIN ASIGNAR"?"ºC":$F{txtunidades})]]></textFieldExpression>
+					</textField>
+				</frame>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="horariosturno">
+		<groupExpression><![CDATA[$F{txthorarioturno}]]></groupExpression>
+		<groupHeader>
+			<band height="15">
+				<textField>
+					<reportElement uuid="7e46fd19-5da8-45d7-9333-b9a549590f83" mode="Transparent" x="0" y="0" width="549" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="true" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{txthorarioturno}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="79" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e65df949-a1f4-45f6-a8ee-088eeee43354" x="477" y="-1" width="78" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["PLDI"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="4126186b-c53a-4d6f-9866-f7fda154c96e" x="478" y="39" width="77" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{appcc_appcc_fechaedicion}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="a2cb65b1-a513-42b6-be42-c9f99516a45b" x="477" y="-1" width="1" height="79"/>
+			</line>
+			<staticText>
+				<reportElement uuid="78cf07ec-8a2e-45d2-8a97-ce95f26d1f97" x="423" y="59" width="54" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Tipo]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="bf0881f6-6897-440c-8656-53f93ccf8249" x="423" y="38" width="132" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="384a5c5a-8874-463f-81f3-97a4be0f2433" x="423" y="19" width="54" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Versión]]></text>
+			</staticText>
+			<rectangle radius="10">
+				<reportElement uuid="7cf66b59-e4a3-425d-899e-358b74d4ce9c" mode="Transparent" x="423" y="0" width="132" height="78"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="3bd1c2d5-7717-47da-92aa-81f5789a6f3b" x="423" y="39" width="54" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="2e5de519-4bdd-4468-86b1-0b950437e69c" x="423" y="56" width="132" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="bf0ef3fd-1384-4eb7-9b34-043b12eba99c" x="423" y="-1" width="54" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="acee41c3-f5e2-44c9-a536-2cc84d58e22b" x="477" y="59" width="78" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Manual"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0a9a18a0-e751-4314-9928-c71f761765ed" x="477" y="19" width="78" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["5"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="718eaedc-1508-40f2-b3dd-512443b0cd40" x="423" y="19" width="132" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="ea55b3a7-4a2c-4003-ab47-98ae7422612d" x="0" y="-1" width="423" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_appcc_denominacion}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="673eb002-a5d2-4883-9aba-e8a95379b675" mode="Transparent" x="0" y="37" width="423" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_cabregistros_denominacion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="d55c918e-f972-49eb-86c8-88234d7fc48f" x="0" y="0" width="78" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_registros_fechadesde}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.0000">
+				<reportElement uuid="9021adea-1caf-4381-a271-6783171772b9" x="78" y="0" width="78" height="10">
+					<printWhenExpression><![CDATA[($F{appcc_registros_valor}== null?false:true)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_registros_valor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9ca64ae8-05f3-4b5f-a32d-eb9abf04fd50" x="156" y="0" width="399" height="10"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appcc_registros_observaciones}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="76da3edc-b5b9-41d9-80d3-16d69e975e22" x="78" y="0" width="78" height="10">
+					<printWhenExpression><![CDATA[($F{appcc_registros_valor}== null?true:false)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{appcc_registros_estado}==false?'N':'S')]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement uuid="100ade95-0fd0-441b-8342-137458fd03e0" style="BANDAS" mode="Transparent" x="0" y="0" width="555" height="10"/>
+			</rectangle>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="42" splitType="Stretch">
+			<frame>
+				<reportElement uuid="def7d1a1-2b6b-4b93-8517-2b22f150a728" x="0" y="20" width="555" height="20"/>
+				<textField>
+					<reportElement uuid="a7a9b5c6-0928-40fc-9d5e-e8bd33e5b77b" x="429" y="0" width="76" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement uuid="8d14216e-f180-4616-ba2b-3aaa06146714" x="509" y="0" width="45" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement uuid="be3769a2-fc91-4d1a-9217-f2f9b401dbe3" x="0" y="0" width="129" height="20"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="34410864-11b8-4f88-915d-59990c855b0f" x="0" y="0" width="129" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{JASPER_REPORT}.getName()]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement uuid="d68a3ad8-2362-427c-b83b-afaf851a1942" x="129" y="0" width="100" height="20"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="0e3393fc-cd44-4257-b099-abd4bd3275e9" x="229" y="0" width="100" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SIVA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1b8b8ab3-74a4-4d84-a1c1-f5bd2da92cec" x="129" y="0" width="100" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Version: 1.0]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement uuid="b1e2b078-c6dc-415e-959f-6397dc90c9aa" mode="Transparent" x="229" y="0" width="100" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="b823aa80-e41f-4824-b696-c58a761f93e8" mode="Transparent" x="429" y="0" width="125" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="1afd67d6-79f0-4b20-9247-2a1f008ca1ee" x="329" y="0" width="100" height="20"/>
+				</rectangle>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="a3e028a8-6926-4f0c-9671-571a4fccbc56" x="329" y="0" width="100" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="ffd67177-acb6-4576-9fb5-1bfd032d0e72" x="0" y="0" width="555" height="20"/>
+				<rectangle>
+					<reportElement uuid="765e4140-0b94-467e-ab94-5b87e50752b4" x="0" y="0" width="82" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="b59d692b-47ae-47ce-83cd-fa3018902432" x="82" y="0" width="116" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="b2dc56b1-653a-451d-ae8f-f5a7d8593226" mode="Transparent" x="357" y="0" width="110" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="1d70270c-d30b-4668-8c03-9a072d454145" x="285" y="0" width="72" height="20"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="7dcea2cd-e256-4907-b17a-c3bdae63d6e3" x="0" y="0" width="82" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Cumplimentado por:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="86ba2ab1-5d10-48b0-a3c1-4fabe4e9518c" x="285" y="0" width="72" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Revisado por:]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement uuid="d250754f-8e13-4a20-8a47-98519049e9f3" mode="Transparent" x="505" y="0" width="49" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="67735d07-4e73-4c03-9739-4714de78a831" mode="Transparent" x="467" y="0" width="38" height="20"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="9e8ec3bc-0a1f-44a1-8b57-094d1dd270bb" x="467" y="0" width="38" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Fecha Rev.]]></text>
+				</staticText>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="4533dd49-a180-437e-ac96-1ce96607afc3" mode="Transparent" x="505" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="214c2a16-4a36-44e4-9d33-edb845eb3c2d" x="198" y="0" width="38" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<text><![CDATA[Fecha Cumpli]]></text>
+				</staticText>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement uuid="8c26f3eb-21ff-4274-8fd0-152118f06b95" mode="Transparent" x="236" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement uuid="95362e1e-9c07-4870-9d43-bef4aacbca25" mode="Transparent" x="236" y="0" width="49" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="5a7d1ea4-8a81-4f3e-a4fe-ba08bd3de9fc" mode="Transparent" x="198" y="0" width="38" height="20"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="f300d160-581a-4add-b6a0-a4b82f061894" x="357" y="0" width="110" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{txtperfirma}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="165" splitType="Stretch">
+			<lineChart>
+				<chart theme="aegean">
+					<reportElement uuid="758abf7f-9a5d-418e-b356-14d952b233a8" x="0" y="6" width="555" height="159"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend position="Bottom">
+						<font fontName="Arial" size="5"/>
+					</chartLegend>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{txtzonas}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{appcc_registros_fechadesde}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{appcc_registros_valor}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat>
+							<labelFont>
+								<font fontName="Arial" size="5"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Arial" size="5"/>
+							</tickLabelFont>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat tickLabelMask="ºC">
+							<labelFont>
+								<font fontName="Arial" size="5" isBold="true"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Arial" size="5"/>
+							</tickLabelFont>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>

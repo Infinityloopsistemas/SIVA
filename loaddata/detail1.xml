@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Devices-Detail-Response>
+<PollCount>254772</PollCount>
+<DevicesConnected>1</DevicesConnected>
+<LoopTime>1.035</LoopTime>
+<DevicesConnectedChannel1>1</DevicesConnectedChannel1>
+<DevicesConnectedChannel2>0</DevicesConnectedChannel2>
+<DevicesConnectedChannel3>0</DevicesConnectedChannel3>
+<DataErrorsChannel1>35</DataErrorsChannel1>
+<DataErrorsChannel2>0</DataErrorsChannel2>
+<DataErrorsChannel3>0</DataErrorsChannel3>
+<VoltageChannel1>4.69</VoltageChannel1>
+<VoltageChannel2>4.68</VoltageChannel2>
+<VoltageChannel3>4.69</VoltageChannel3>
+<VoltagePower>4.92</VoltagePower>
+<DeviceName>CAMARA_1</DeviceName>
+<HostName>INVERPESCA</HostName>
+<MACAddress>00:04:A3:BE:85:4A</MACAddress>
+<owd_DS18B20 Description="Programmable resolution thermometer">
+<Name>DS18B20</Name>
+<Family>28</Family>
+<ROMId>540000041D006628</ROMId>
+<Health>7</Health>
+<Channel>1</Channel>
+<RawData>1AFF4B467FFF0610D1FF0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</RawData>
+<PrimaryValue>-14.3750 Deg C</PrimaryValue>
+<Temperature Units="Centigrade">-14.3750</Temperature>
+<UserByte1 Writable="True">75</UserByte1>
+<UserByte2 Writable="True">70</UserByte2>
+<Resolution>12</Resolution>
+<PowerSource>255</PowerSource>
+</owd_DS18B20>
+</Devices-Detail-Response>

@@ -1,0 +1,40 @@
+{% extends "base/base.html" %}
+
+{% block body %}
+        <!--span-->
+            <!--box-->
+            <div class="box corner-all">
+                <!--box header-->
+                <div class="box-header grd-white color-black corner-top">
+                    <div class="header-control">
+                        <a data-box="collapse"><i class="icofont-caret-up"></i></a>
+                        <a data-box="close">&times;</a>
+                    </div>
+                    <span>{{ lista_objeto.titulobox }}</span>
+                </div><!--/box header-->
+                <!--box body-->
+                <div class="box-body corner-bottom">
+                    <!--animate button-->
+                    <!--a-btn-->
+                    {%  for aobjeto in lista_objeto.contenido %}
+                        <h3>{{ aobjeto.apartado }}</h3>
+                        <div class="shortcut-group">
+                            <ul class="a-btn-group">
+                                {%  for objeto in aobjeto.botones %}
+                                    <li>
+                                        <a href="{{ objeto.href }}" class="a-btn square grd-black " title="{{ objeto.titulo }}">
+                                            <span><h6 class="color-white">{{ objeto.titulo }}</h6></span>
+                                            <span><i class="{{ objeto.icon1 }} color-white"></i></span>
+                                            <span class="color-dark"><i class="{{ objeto.icon2 }}"></i></span>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <div class="divider-content"><span></span></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+{% endblock %}

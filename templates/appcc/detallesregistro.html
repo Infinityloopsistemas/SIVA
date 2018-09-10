@@ -1,0 +1,116 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+{% load selectable_tags %}
+{% include_jquery_libs %}
+{% include_ui_theme 'ui-lightness' %}
+{% block extrahead %}
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/base/jquery-ui.css" type="text/css">
+    <link href="{{ STATIC_URL }}selectable/css/dj.selectable.css" type="text/css" media="all" rel="stylesheet">
+    <style type="text/css">
+        .add-row {
+            padding-left:18px;
+            background:url({{ STATIC_URL }}images/add.png) no-repeat left center;
+        }
+        .delete-row {
+            display:block;
+            margin:6px 0 0 0;
+            padding-left:18px;
+            background:url({{ STATIC_URL }}images/delete.png) no-repeat left center;
+        }
+        .dynamic-form {
+            margin-bottom:6px;
+            padding-bottom:6px;
+            border-bottom:1px dotted #ccc;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+
+        <form action="." method="post">{% csrf_token %}
+                <div class="box corner-all">
+                    <div class="box-header grd-white color-silver-dark corner-top" >
+                        <div class="header-control">
+                            <a data-box="collapse"><i class="icofont-caret-up"></i></a>
+                            <a data-box="close">×</a>
+                        </div>
+                        <span>  {{ auxiliar.etiqueta }} </span>
+
+                    </div>
+                    <div class="box-body">
+
+                        {%  crispy  form form.helper %}
+
+                    </div>
+
+                    <div class="box-body">
+                        {{ form_detail.management_form }}
+                        <table class="table table-bordered table-striped responsive dataTable">
+                            <thead>
+                            <th>Fecha</th>
+                            <th>Valor</th>
+                            <th>Estado</th>
+                            <th>Autorizado</th>
+                            <th>Observaciones</th>
+                            <th>Turno</th>
+                            <th>Accion</th>
+                            </thead>
+
+                            {%  for form_line in form_detail %}
+
+                                {%  crispy form_line %}
+
+
+                            {% endfor %}
+
+                        </table>
+
+                        <div class="form-actions">
+
+                            <input id="submit-id-update" class="btn btn-primary" type="submit" value="Guardar" name="Update">
+                            <input id="button-id-cancel" class="btn" type="button" value="Cancelar" name="cancel">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+        </form>
+
+
+{%  endblock %}
+
+{% block footer %}
+    <script src="{{ STATIC_URL }}js/jquery.formset.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('#button-id-cancel').click(function () {
+                parent.history.back();
+            });
+            $('.form-row.inline.{{ form_detail.prefix }}').formset({
+                prefix: '{{ form_detail.prefix }}',
+            });
+            $('[data-form=datepicker]').datepicker({format : 'dd/mm/yyyy',  language: 'es'  });
+
+        });
+
+        $('input[name*="horarioturno"]').focus( function(e){
+
+
+            $(this).djselectable('option','prepareQuery',function(query)
+                {
+                        var idturno = $('select[name="tpturnos"]').val();
+
+                        query.idtpturno = idturno;
+                }
+                );
+        });
+    </script>
+
+
+{%  endblock %}
